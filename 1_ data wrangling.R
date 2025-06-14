@@ -29,7 +29,7 @@ library(ggplot2)
 
 
 
-source("/Users/Lexi/Desktop/internship/2_ code/Lexi_Helpers.R")
+source("/Users/Lexi/Desktop/internship/internship/Lexi_Helpers.R")
 
 #####################################################################
 #                  2. REVERSE CESD STANDARDISATION                  #

@@ -826,6 +826,8 @@ PlotMEANS <- function(model,
   # Means at t=0 for the selected cluster solution
   m_ints <- l_coefs$Exogenous_coefficients[, 1, ] 
   
+  K <- nCluster
+  
   # Get proportions for this cluster solution
   sum_out <- summary(model, show="GNL")
   v_prop <- sum_out$FunctionOutput$Proportions

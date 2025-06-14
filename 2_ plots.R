@@ -14,7 +14,7 @@ library(brms)
 library(gridExtra)
 
 
-source("/Users/Lexi/Desktop/internship/2_ code/Lexi_Helpers.R")
+source("/Users/Lexi/Desktop/internship/internship/Lexi_Helpers.R")
 load("/Users/Lexi/Desktop/internship/1_ data/datalexi.RData")
 
 
@@ -289,7 +289,7 @@ dev.off()
 ##############################################
 #                7. PLOT MEANS               #
 ##############################################
-pdf("/Users/Lexi/Desktop/internship/4_ plots/13_ means.pdf", width=6, height=6)
+pdf("/Users/Lexi/Desktop/internship/4_ plots/13_ means.pdf", width=8, height=6)
 PlotMEANS(model = out_seed1, nCluster = 2, variable = variables)
 PlotMEANS(model = out_seed1, nCluster = 3, variable = variables)
 PlotMEANS(model = out_seed1, nCluster = 4, variable = variables)
@@ -302,7 +302,7 @@ dev.off()
 ####################################################
 #                7. PLOT TIME TRENDS               #
 ####################################################
-pdf("/Users/Lexi/Desktop/internship/4_ plots/14_ trends.pdf", width=6, height=6)
+pdf("/Users/Lexi/Desktop/internship/4_ plots/14_ trends.pdf", width=8, height=6)
 PlotTRENDS(out_seed1, 2, variables)
 PlotTRENDS(out_seed1, 3, variables)
 PlotTRENDS(out_seed1, 4, variables)

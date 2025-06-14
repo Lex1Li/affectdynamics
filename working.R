@@ -3030,4 +3030,3 @@ layout(matrix(1:2, ncol=2))
 PlotHEAT(c12, main = "Cluster 1 - 2", labels = variables, pcor = T)
 PlotHEAT(c32, main = "Cluster 3 - 2", labels = variables, pcor = T)
 
-# hello is this pushed?
