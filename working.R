@@ -3058,3 +3058,6 @@ for (nClusters in cluster_range) {
   }
   grid.arrange(grobs = plot_list, ncol = nClusters, nrow = length(variables))
 }
+
+
+# what
