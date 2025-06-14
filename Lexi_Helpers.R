@@ -1,6 +1,14 @@
 #######################################################
 #                  TIME SERIES PLOTS                  #
 #######################################################
+plotLabel <- function(x, srt=0, col="black",
+                      xpos=.5, ypos=.5, cex=1.5) {
+  par(mar=rep(0, 4))
+  plot.new()
+  plot.window(xlim=c(0,1), ylim=c(0,1))
+  text(xpos, ypos, x, srt=srt, cex=cex, col=col)
+}
+
 PlotTS_Flex <- function(data,
                         IDcol, # column with subject ID
                         ID, # subject ID
@@ -664,6 +672,8 @@ PlotCOLLAPSED <- function(model,
     legend_labels <- ifelse(unique_ids == random_id,
                             paste0("**", unique_ids, "**"),
                             as.character(unique_ids))
+    
+    message("Selected id: ", random_id)
   } else {
     cluster_data$alpha_plot <- opaqueness
   }

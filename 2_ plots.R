@@ -61,6 +61,42 @@ for(i in 1:3) {
 dev.off()
 
 
+# ----- not used # RANDOM ID FROM FOUR CLUSTER MODEL ----- #
+
+lmat <- matrix(4:12, 3, 3, byrow = TRUE)
+lmat <- cbind(1:3, lmat)
+lo <- layout(lmat, widths = c(0.15, 1, .25, 1), heights = c(1,1,1))
+layout.show(lo)
+
+for(i in 1:3)   plotLabel(paste0("     Person ", LETTERS[i]), srt = 90)
+
+id4 <- c(449, 559, 531, 518)
+
+for(i in id4) {
+  PlotTS_Flex(data = data,
+              IDcol = "ID",
+              ID = i, # Subject number, here fixed
+              variable = "Happy", # Variable
+              layout = FALSE,
+              title = TRUE,
+              ylab = TRUE,
+              xlab = TRUE,
+              xlim = c(1, 80))
+  
+  plotBV_flex(data = data,
+              IDcol = "ID",
+              ID = i, # Subject number, here fixed
+              variable1 = "Happy",
+              variable2 = "Happy", # Variable
+              lag = TRUE,
+              title = FALSE,
+              para = TRUE)
+}
+
+# ----- #
+
+
+
 ######################################################################
 #                3. TS PLOTS FOR ALL AFFECT AND ALL N                #
 ######################################################################
@@ -97,6 +133,41 @@ for(j in 1:n) {
 
 dev.off()
 
+
+
+# editing !!! 
+# ----- RANDOM ID FROM FOUR CLUSTER MODEL ----- # 
+id4 <- c(449, 559, 531, 518)
+
+
+pdf("/Users/Lexi/Desktop/internship/4_ plots/17_ id4.pdf", width=9, height=4)
+
+for (j in id4) {
+  # Make Layout
+  lmat <- matrix(1:16, 2, 8, byrow = TRUE)
+  lo <- layout(lmat, widths = c(1, .25, 1, .25, 1, .25, 1, .25), heights = c(1,1))
+  
+  # ID panel
+  par(mar = c(0, 0, 0, 0))  # remove all margins
+  plot.new()
+  text(0.6, 0.6, paste("Participant ID:", j), cex = 1, font = 2)
+  plot.new()
+  
+  # Make plot for person j
+  for(i in 1:7)   PlotTS_Flex(data = data,
+                              IDcol = "ID",
+                              ID = j, # Subject number, here fixed
+                              variable = variables[i], # Variable
+                              layout = FALSE,
+                              title = TRUE,
+                              ylab = TRUE,
+                              xlab = TRUE,
+                              xlim = c(1, 80))
+  
+  print(j)
+}
+
+dev.off()
 
 
 ######################################################################
@@ -274,6 +345,12 @@ for (nClusters in cluster_range) {
 }
 
 dev.off()
+
+
+# Selected id: 449
+# Selected id: 559
+# Selected id: 531
+# Selected id: 518
 
 
 # ----- # 
