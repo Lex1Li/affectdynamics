@@ -12,6 +12,8 @@ library(tidyverse)
 library(xtable)
 library(brms)
 library(gridExtra)
+library(ggtext)
+
 
 
 source("/Users/Lexi/Desktop/internship/internship/Lexi_Helpers.R")
@@ -216,6 +218,7 @@ dev.off()
 
 
 # individual collapsed plot example
+set.seed(443)
 PlotCOLLAPSED(
   model = out_seed1,
   nClusters = 4,
@@ -223,9 +226,11 @@ PlotCOLLAPSED(
   data = affect,
   PID = "PID",
   timepoints = "OCCASION",
-  variable = "Stressed"
+  variable = "Stressed",
+  random = TRUE
 )
 
+set.seed(443)
 PlotCOLLAPSED(
   model = out_seed1,
   nClusters = 4,
@@ -233,7 +238,8 @@ PlotCOLLAPSED(
   data = affect,
   PID = "PID",
   timepoints = "OCCASION",
-  variable = "Sad"
+  variable = "Sad",
+  random = TRUE
 )
 
 

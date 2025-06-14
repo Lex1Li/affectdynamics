@@ -634,7 +634,8 @@ PlotCOLLAPSED <- function(model,
                           plot_margin = c(1,1,1,1),
                           title = paste0('Time series of ', variable, ' in Cluster ', clusterToPlot),
                           remove_xlab = FALSE,
-                          opaqueness = 1) {
+                          opaqueness = 1,
+                          random = FALSE) {   
   
   # ----- extract classification of best model -----
   best_runs <- getBestModel(model)
@@ -654,32 +655,50 @@ PlotCOLLAPSED <- function(model,
     message("Number of participants classified into Cluster ", clusterToPlot, ": ", length(cluster_ids))
   }
   
-  # ----- handle MSD title -----
-  if (identical(title, "MSD")) {
-    m <- mean(cluster_data[[variable]], na.rm = TRUE)
-    s <- sd(cluster_data[[variable]], na.rm = TRUE)
-    title <- paste0("Cluster ", clusterToPlot, " M = ", round(m, 2), " SD = ", round(s, 2))
+  # ----- handle random highlighting and legend labels -----
+  unique_ids <- unique(cluster_data[[PID]])
+  legend_labels <- as.character(unique_ids)
+  if (random) {
+    random_id <- sample(unique_ids, 1)
+    cluster_data$alpha_plot <- ifelse(cluster_data[[PID]] == random_id, 1, 0.15)
+    legend_labels <- ifelse(unique_ids == random_id,
+                            paste0("**", unique_ids, "**"),
+                            as.character(unique_ids))
+  } else {
+    cluster_data$alpha_plot <- opaqueness
   }
   
-  # ----- plot -----
+  # Use ggtext for bold legend labels (requires ggtext package)
+  if (requireNamespace("ggtext", quietly = TRUE)) {
+    theme_legend <- theme(
+      legend.text = ggtext::element_markdown(),
+      legend.position = if (show_legend) "right" else "none",
+      plot.margin = unit(plot_margin, "cm"),
+      plot.title = element_text(size = 12)
+    )
+  } else {
+    theme_legend <- theme(
+      legend.position = if (show_legend) "right" else "none",
+      plot.margin = unit(plot_margin, "cm"),
+      plot.title = element_text(size = 12)
+    )
+  }
+  
   ggplot(cluster_data, aes_string(x = timepoints, 
                                   y = variable, 
                                   group = paste0("factor(", PID, ")"), 
                                   colour = paste0("factor(", PID, ")"))) +
-    geom_line(alpha = opaqueness) +
+    geom_line(aes(alpha = alpha_plot)) +
     ylim(0, 100) +
     labs(
       x = if (remove_xlab) NULL else timepoints,
       y = variable,
       title = title
     ) +
-    scale_colour_discrete(name = 'Participant ID') +
+    scale_colour_discrete(name = 'Participant ID', labels = legend_labels) +
+    scale_alpha_identity() +  
     theme_minimal() +
-    theme(
-      legend.position = if (show_legend) "right" else "none",
-      plot.margin = unit(plot_margin, "cm"),
-      plot.title = element_text(size = 12)
-    )
+    theme_legend
 }
 
 
