@@ -3030,3 +3030,31 @@ layout(matrix(1:2, ncol=2))
 PlotHEAT(c12, main = "Cluster 1 - 2", labels = variables, pcor = T)
 PlotHEAT(c32, main = "Cluster 3 - 2", labels = variables, pcor = T)
 
+
+
+
+cluster_range <- 4
+
+for (nClusters in cluster_range) {
+  plot_list <- list()
+  for (variable in variables) {
+    for (clusterToPlot in 1:nClusters) {
+      set.seed(336)
+      
+      p <- PlotCOLLAPSED(
+        model = out_seed1,
+        nClusters = nClusters,
+        clusterToPlot = clusterToPlot,
+        variable = variable,
+        show_legend = FALSE,
+        plot_margin = c(0.05, 0.05, 0.05, 0.05),
+        remove_xlab = TRUE,
+        opaqueness = 0.8,
+        random = TRUE
+      )
+      if (is.null(p)) p <- grid::nullGrob()
+      plot_list[[length(plot_list) + 1]] <- p
+    }
+  }
+  grid.arrange(grobs = plot_list, ncol = nClusters, nrow = length(variables))
+}

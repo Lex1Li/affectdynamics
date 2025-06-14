@@ -660,7 +660,7 @@ PlotCOLLAPSED <- function(model,
   legend_labels <- as.character(unique_ids)
   if (random) {
     random_id <- sample(unique_ids, 1)
-    cluster_data$alpha_plot <- ifelse(cluster_data[[PID]] == random_id, 1, 0.15)
+    cluster_data$alpha_plot <- ifelse(cluster_data[[PID]] == random_id, 1, 0.1)
     legend_labels <- ifelse(unique_ids == random_id,
                             paste0("**", unique_ids, "**"),
                             as.character(unique_ids))

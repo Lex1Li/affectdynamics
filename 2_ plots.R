@@ -244,6 +244,40 @@ PlotCOLLAPSED(
 
 
 
+
+# ----- RANDOM HIGHLIGHTED FOUR CLUSTER MODEL ----- #
+pdf("/Users/Lexi/Desktop/internship/4_ plots/16_ highlighted timeseries.pdf", width=12, height=14)
+cluster_range <- 4
+
+for (nClusters in cluster_range) {
+  plot_list <- list()
+  for (variable in variables) {
+    for (clusterToPlot in 1:nClusters) {
+      set.seed(336)
+      
+      p <- PlotCOLLAPSED(
+        model = out_seed1,
+        nClusters = nClusters,
+        clusterToPlot = clusterToPlot,
+        variable = variable,
+        show_legend = FALSE,
+        plot_margin = c(0.05, 0.05, 0.05, 0.05),
+        remove_xlab = TRUE,
+        opaqueness = 0.8,
+        random = TRUE
+      )
+      if (is.null(p)) p <- grid::nullGrob()
+      plot_list[[length(plot_list) + 1]] <- p
+    }
+  }
+  grid.arrange(grobs = plot_list, ncol = nClusters, nrow = length(variables))
+}
+
+dev.off()
+
+
+# ----- # 
+
 ################################################################
 #                6. PLOT CONTEMPORANEOUS EFFECTS               #
 ################################################################
