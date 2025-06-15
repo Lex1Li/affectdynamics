@@ -3060,3 +3060,36 @@ for (nClusters in cluster_range) {
 }
 
 
+
+
+
+
+
+###### make ind from each cluster graph ##### 
+
+# make layout
+lmat <- matrix(1:56, 7, 8, byrow = TRUE)
+lmat <- rbind(c(57, 57, 58, 58, 59, 59, 60, 60), lmat)
+
+lo <- layout(lmat, widths = c(1, .25, 1, .25, 1, .25, 1, .25), heights = c(0.5,1,1,1,1,1,1,1))
+# layout.show(lo)
+
+# all variables
+for (j in variables) {
+  for (i in id4) {
+    PlotTS_Flex(data = data,
+                IDcol = "ID",
+                ID = i, # Subject number, here fixed
+                variable = j, # Variable
+                layout = FALSE,
+                title = TRUE,
+                ylab = TRUE,
+                xlab = TRUE,
+                xlim = c(1, 80))
+  }
+}
+
+for(i in 1:4)   plotLabel(paste0("Cluster ", i, " (ID = ", id4[i], ")"))
+
+
+?text

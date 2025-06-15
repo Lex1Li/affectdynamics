@@ -135,37 +135,35 @@ dev.off()
 
 
 
-# editing !!! 
 # ----- RANDOM ID FROM FOUR CLUSTER MODEL ----- # 
 id4 <- c(449, 559, 531, 518)
 
 
-pdf("/Users/Lexi/Desktop/internship/4_ plots/17_ id4.pdf", width=9, height=4)
+pdf("/Users/Lexi/Desktop/internship/4_ plots/17_ id4.pdf", width=12, height=14)
 
-for (j in id4) {
-  # Make Layout
-  lmat <- matrix(1:16, 2, 8, byrow = TRUE)
-  lo <- layout(lmat, widths = c(1, .25, 1, .25, 1, .25, 1, .25), heights = c(1,1))
-  
-  # ID panel
-  par(mar = c(0, 0, 0, 0))  # remove all margins
-  plot.new()
-  text(0.6, 0.6, paste("Participant ID:", j), cex = 1, font = 2)
-  plot.new()
-  
-  # Make plot for person j
-  for(i in 1:7)   PlotTS_Flex(data = data,
-                              IDcol = "ID",
-                              ID = j, # Subject number, here fixed
-                              variable = variables[i], # Variable
-                              layout = FALSE,
-                              title = TRUE,
-                              ylab = TRUE,
-                              xlab = TRUE,
-                              xlim = c(1, 80))
-  
-  print(j)
+# make layout
+lmat <- matrix(1:56, 7, 8, byrow = TRUE)
+lmat <- rbind(c(57, 57, 58, 58, 59, 59, 60, 60), lmat)
+
+lo <- layout(lmat, widths = c(1, .25, 1, .25, 1, .25, 1, .25), heights = c(0.5,1,1,1,1,1,1,1))
+# layout.show(lo)
+
+# all variables
+for (j in variables) {
+  for (i in id4) {
+    PlotTS_Flex(data = data,
+                IDcol = "ID",
+                ID = i, # Subject number, here fixed
+                variable = j, # Variable
+                layout = FALSE,
+                title = TRUE,
+                ylab = TRUE,
+                xlab = TRUE,
+                xlim = c(1, 80))
+  }
 }
+
+for(i in 1:4)   plotLabel(paste0("Cluster ", i, " (ID = ", id4[i], ")"), ypos = 0.3)
 
 dev.off()
 
