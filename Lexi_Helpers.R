@@ -78,6 +78,55 @@ PlotTS_Flex <- function(data,
 
 
 
+#############################################################################
+#                FUNCTION TO CAL AND PLOT SCALED BIC AND NLL                #
+#############################################################################
+
+PlotScaled <- function(model, title = NULL) {
+  sum <- summary(model, show = "GNL")
+  
+  # Get negLL
+  negLL <- -sum$FunctionOutput$`log-likelihood`
+  negLL_scaled <- negLL/max(negLL)
+  
+  # Get BIC
+  BIC <- sum$FunctionOutput$BIC
+  BIC_scaled <- BIC/max(BIC)
+  
+  # canvas
+  K <- length(BIC)
+  plot.new()
+  ymax <- 1
+  ymin <- min(c(negLL_scaled, BIC_scaled))
+  
+  plot.window(xlim=c(1,K), ylim=c(ymin, ymax))
+  axis(1, 1:K)
+  axis(2, las=2)
+  grid()
+  title(xlab="Number of Clusters", line=2.5)
+  title(title, font.main=1)
+  
+  # plot
+  shift <- 0 # why add/subtract shift?
+  
+  # negLL
+  points((1:K)-shift, negLL_scaled, pch=16, cex=1.25)
+  lines((1:K)-shift, negLL_scaled, lwd=2)
+  
+  # BIC
+  points((1:K)+shift, BIC_scaled, col="tomato", pch=16, cex=1.25)
+  lines((1:K)+shift, BIC_scaled, col="tomato", lwd=2)
+  
+  # legend
+  legend("topright", legend=c("Negative LL (scaled)", "BIC (scaled)"),
+         text.col=c("black", "tomato"), bty="n", cex=1)
+}
+
+
+PlotScaled(out_seed1, title = "Random Seed 1")
+
+
+
 #############################################
 #                  BV PLOT                  #
 #############################################

@@ -469,3 +469,46 @@ for (nClusters in cluster_range) {
 }
 
 dev.off()
+
+
+
+
+
+#################################################
+#                8. SCALED BIC CI               #
+#################################################
+BIC_robustness <- apply(BIC_1to8, 2, function(col) col / max(col))
+
+BIC_mean <- apply(BIC_robustness, 1, mean)
+BIC_se <- apply(BIC_robustness, 1, function(x) sd(x) / sqrt(30))
+
+BIC_lower <- BIC_mean - qnorm(0.975) * BIC_se
+BIC_higher <- BIC_mean + qnorm(0.975) * BIC_se
+
+
+# ----- set layout -----
+plot.new()
+ymax <- 1
+ymin <- 0.98
+
+K <- nrow(BIC_robustness)
+plot.window(xlim=c(1,K), ylim=c(ymin, ymax))
+
+axis(1, 1:K)
+axis(2, las=2)
+grid()
+
+title(xlab="Number of clusters", line=2.5)
+title("Scaled BIC", font.main=1)
+
+
+# ----- plot -----
+points((1:K), BIC_mean, col="#E41A1C", pch=16, cex=1.25)
+lines((1:K), BIC_mean, col="#E41A1C", lwd=1.5)
+
+polygon(
+  c(1:K, rev(1:K)),
+  c(BIC_lower, rev(BIC_higher)),
+  col = rgb(0.3, 0.6, 1, 0.2),
+  border = NA
+)

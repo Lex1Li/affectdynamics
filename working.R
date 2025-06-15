@@ -716,6 +716,7 @@ for (i in 1:30) {
 # save(BIC_1to8, file = "/Users/Lexi/Desktop/internship/5_ results/Robustness_ 1to8.RData")
 
 
+
 ##### PLOT THE 30 TRIALS
 pdf("/Users/Lexi/Desktop/internship/4_ plots/6_ BIC 1to8.pdf", width=7, height=10)
 
@@ -3093,3 +3094,102 @@ for(i in 1:4)   plotLabel(paste0("Cluster ", i, " (ID = ", id4[i], ")"))
 
 
 ?text
+
+
+
+
+
+### SCALED BIC CI ###
+
+?load
+
+load("/Users/Lexi/Desktop/internship/5_ results/Robustness_ 1to8.RData")
+
+
+# Get BIC
+sum1 <- summary(out_seed1, show = "GNL")
+
+BIC <- sum1$FunctionOutput$BIC
+BIC_scaled <- BIC/max(BIC)
+
+BIC_robustness <- sweep(BIC_1to8, 2, apply(BIC_1to8, 2, max), "/")
+
+bic_mean <- apply(BIC_robustness, 1, mean, na.rm = TRUE)
+bic_se <- apply(BIC_robustness, 1, function(x) sd(x, na.rm = TRUE) / sqrt(sum(!is.na(x))))
+
+# 95% CI
+bic_ci_lower <- bic_mean - qnorm(0.975) * bic_se
+bic_ci_upper <- bic_mean + qnorm(0.975) * bic_se
+
+bic_ci_df <- data.frame(
+  Cluster = rownames(BIC_robustness),
+  Mean = bic_mean,
+  Lower = bic_ci_lower,
+  Upper = bic_ci_upper
+)
+
+
+
+
+PlotScaled(out_seed1, title = "Random Seed 1")
+
+clusters <- as.numeric(gsub(" Clusters", "", rownames(BIC_robustness)))
+
+
+x <- as.numeric(gsub("[^0-9]", "", bic_ci_df$Cluster))  # Extract numeric cluster numbers
+y <- bic_ci_df$Mean
+lower <- bic_ci_df$Lower
+upper <- bic_ci_df$Upper
+
+# Plot mean line
+plot(x, y, type = "l", col = "red", lwd = 2,
+     ylim = range(c(lower, upper, y), na.rm = TRUE),
+     xlab = "Number of Clusters", ylab = "Mean Scaled BIC",
+     main = "Mean Scaled BIC with 95% CI")
+
+# Add shaded confidence interval
+polygon(c(x, rev(x)), c(lower, rev(upper)),
+        col = rgb(1, 0, 0, 0.2), border = NA)
+
+# Redraw mean line on top
+lines(x, y, col = "black", lwd = 1)
+
+
+##### plot scaled BIC
+BIC_robustness <- apply(BIC_1to8, 2, function(col) col / max(col))
+
+BIC_mean <- apply(BIC_robustness, 1, mean)
+BIC_se <- apply(BIC_robustness, 1, function(x) sd(x) / sqrt(30))
+
+# 95% CI
+BIC_lower <- BIC_mean - qnorm(0.975) * BIC_se
+BIC_higher <- BIC_mean + qnorm(0.975) * BIC_se
+
+
+
+# set layout 
+plot.new()
+ymax <- 1
+ymin <- 0.98
+
+K <- nrow(BIC_robustness)
+plot.window(xlim=c(1,K), ylim=c(ymin, ymax))
+
+axis(1, 1:K)
+axis(2, las=2)
+grid()
+
+title(xlab="Number of clusters", line=2.5)
+title("Scaled BIC", font.main=1)
+
+
+# plot data
+points((1:K), BIC_mean, col="#E41A1C", pch=16, cex=1.25)
+lines((1:K), BIC_mean, col="#E41A1C", lwd=1.5)
+
+polygon(
+  c(1:K, rev(1:K)),
+  c(BIC_lower, rev(BIC_higher)),
+  col = rgb(0.3, 0.6, 1, 0.2),
+  border = NA
+)
