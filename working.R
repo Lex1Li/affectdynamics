@@ -3193,3 +3193,43 @@ polygon(
   col = rgb(0.3, 0.6, 1, 0.2),
   border = NA
 )
+
+
+
+negLL <- -sum1$FunctionOutput$`log-likelihood`
+negLL_scaled <- negLL/max(negLL)
+
+
+
+
+
+#### matrix of three and four cluster model
+
+#     c1  c2  c3
+# c1  
+# c2
+# c3
+# c4
+
+
+
+# ----- extract classification of best model -----
+best_runs <- getBestModel(out_seed1)
+
+best3 <- best_runs[3]
+best4 <- best_runs[4]
+
+clas3 <- t(out_seed1$All_Models[[3]][[1]][[best3]]$Classification)
+clas4 <- t(out_seed1$All_Models[[4]][[1]][[best4]]$Classification)
+
+
+# ----- df of id and classification -----
+class3 <- data.frame(id = as.numeric(rownames(clas3)),
+                     classification = paste0("Cluster ", clas3[, 1]))
+
+class4 <- data.frame(id = as.numeric(rownames(clas4)),
+                     classification = paste0("Cluster ", clas4[, 1]))
+
+
+# ----- how do i put this in  matrix -----
+

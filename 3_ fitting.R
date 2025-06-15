@@ -475,3 +475,36 @@ ranked4 <- lapply(variables, function(var) {
 names(ranked4) <- variables
 
 ranked4[["Happy"]]
+
+
+
+
+####################################################
+#                12. NLL ROBUSTNESS                #
+####################################################
+
+scaledNLL_1to8 <- as.data.frame(
+  matrix(NA, 8, 30, dimnames = list(paste(1:8, 'Clusters'), paste('Seed', 1:30))))
+
+for (i in 1) {
+  model <- LCVAR(Data = data,
+                 yVars = 5:11,
+                 xContinuous = 4,
+                 Beep = 3,
+                 Day = 2,
+                 ID = 1,
+                 Lags = 1,
+                 Clusters = 1:8,
+                 Cores = 9,
+                 Rand = 75,
+                 RndSeed = i)
+  
+  model_sum <- summary(model, show="GNL")
+  nll <- -model_sum$FunctionOutput$`log-likelihood`
+  scaledNLL_1to8[ , i] <- nll/max(nll)
+  
+  print(paste0("Finished seed ", i))
+}
+
+# save(scaledNLL_1to8, file = "/Users/Lexi/Desktop/internship/5_ results/RobustnessNLL_ 1to8.RData")
+
