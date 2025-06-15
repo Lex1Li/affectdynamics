@@ -3235,3 +3235,28 @@ class4 <- data.frame(id = as.numeric(rownames(clas4)),
 merged_classes <- merge(class3, class4, by = "id", suffixes = c("_3", "_4"))
 cross_mat <- addmargins(table(merged_classes$classification_3, merged_classes$classification_4))
 
+
+#### absolute correlation #####
+# get temporal parameters
+coefs1 <- list()
+K <- 6
+for(k in 1:K) coefs1[[k]] <- coef.ClusterVAR(out_seed1, Model = rep(1, k))
+
+temporal1 <- sapply(coefs1, function(sublist) sublist[["VAR_coefficients"]])
+
+
+# set up matrix
+abs_cor <- matrix(NA, nrow = 5, ncol = 4)
+colnames(abs_cor) <- c("Two clusters", "Three clusters", "Four clusters", "Five clusters")
+rownames(abs_cor) <- paste("Cluster", 1:5)
+
+
+# for loop to get absolute correlations
+for (j in 1:4) {
+  
+  # cluster 1
+  abs_cor[1, j] <- sum(abs(temporal1[[j+1]][,,1]))/49 
+  
+  # rest of clusters
+  for (i in 1:j+1) abs_cor[i, j] <- sum(abs(temporal1[[j+1]][,,i]))/49
+}
