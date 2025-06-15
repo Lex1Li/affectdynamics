@@ -3233,7 +3233,5 @@ class4 <- data.frame(id = as.numeric(rownames(clas4)),
 
 # ----- how do i put this in  matrix -----
 merged_classes <- merge(class3, class4, by = "id", suffixes = c("_3", "_4"))
-cross_mat <- table(merged_classes$classification_4, merged_classes$classification_3)
-
-print(cross_mat)
+cross_mat <- addmargins(table(merged_classes$classification_3, merged_classes$classification_4))
 

@@ -508,3 +508,30 @@ for (i in 1) {
 
 # save(scaledNLL_1to8, file = "/Users/Lexi/Desktop/internship/5_ results/RobustnessNLL_ 1to8.RData")
 
+
+
+##################################################################
+#                13. CLASSIFICATION CROSS MATRIX                 #
+##################################################################
+# ----- extract classification of best model -----
+best_runs <- getBestModel(out_seed1)
+
+best3 <- best_runs[3]
+best4 <- best_runs[4]
+
+clas3 <- t(out_seed1$All_Models[[3]][[1]][[best3]]$Classification)
+clas4 <- t(out_seed1$All_Models[[4]][[1]][[best4]]$Classification)
+
+
+# ----- df of id and classification -----
+class3 <- data.frame(id = as.numeric(rownames(clas3)),
+                     classification = paste0("Cluster ", clas3[, 1]))
+
+class4 <- data.frame(id = as.numeric(rownames(clas4)),
+                     classification = paste0("Cluster ", clas4[, 1]))
+
+
+# ----- how do i put this in  matrix -----
+merged_classes <- merge(class3, class4, by = "id", suffixes = c("_3", "_4"))
+cross_mat <- addmargins(table(merged_classes$classification_3, merged_classes$classification_4))
+
