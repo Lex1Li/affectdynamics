@@ -359,7 +359,7 @@ SETlayout <- function(K) {
 #                  PLOT HEAT                  #
 ###############################################
 PlotHEAT <- function(phi,
-                     # k,
+                     k,
                      main,
                      labels = NULL,
                      las.x = 1,
