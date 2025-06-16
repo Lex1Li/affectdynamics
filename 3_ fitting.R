@@ -486,7 +486,7 @@ ranked4[["Happy"]]
 scaledNLL_1to8 <- as.data.frame(
   matrix(NA, 8, 30, dimnames = list(paste(1:8, 'Clusters'), paste('Seed', 1:30))))
 
-for (i in 1) {
+for (i in 1:30) {
   model <- LCVAR(Data = data,
                  yVars = 5:11,
                  xContinuous = 4,

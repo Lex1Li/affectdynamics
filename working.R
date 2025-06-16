@@ -3260,3 +3260,43 @@ for (j in 1:4) {
   # rest of clusters
   for (i in 1:j+1) abs_cor[i, j] <- sum(abs(temporal1[[j+1]][,,i]))/49
 }
+
+
+
+
+# NLL robustness
+
+
+NLL_mean <- apply(scaledNLL_1to8, 1, mean)
+NLL_se <- apply(scaledNLL_1to8, 1, function(x) sd(x) / sqrt(30))
+
+NLL_lower <- NLL_mean - qnorm(0.975) * NLL_se
+NLL_higher <- NLL_mean + qnorm(0.975) * NLL_se
+
+
+# ----- set layout -----
+plot.new()
+ymax <- 1
+ymin <- 0.96
+
+K <- nrow(scaledNLL_1to8)
+plot.window(xlim=c(1,K), ylim=c(ymin, ymax))
+
+axis(1, 1:K)
+axis(2, las=2)
+grid()
+
+title(xlab="Number of clusters", line=2.5)
+title("Scaled NLL", font.main=1)
+
+
+# ----- plot -----
+points((1:K), NLL_mean, col="#E41A1C", pch=16, cex=1.25)
+lines((1:K), NLL_mean, col="#E41A1C", lwd=1.5)
+
+polygon(
+  c(1:K, rev(1:K)),
+  c(NLL_lower, rev(NLL_higher)),
+  col = rgb(0.3, 0.6, 1, 0.2),
+  border = NA
+)
