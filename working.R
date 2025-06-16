@@ -3300,3 +3300,50 @@ polygon(
   col = rgb(0.3, 0.6, 1, 0.2),
   border = NA
 )
+
+
+
+# correlate the time lag matrices
+
+# two clusters
+cor(as.vector(temporal1[[2]][,,1]), 
+    as.vector(temporal1[[2]][,,2]))
+
+# three clusters
+cor(as.vector(temporal1[[3]][,,1]), 
+    as.vector(temporal1[[3]][,,2]))
+
+cor(as.vector(temporal1[[3]][,,1]), 
+    as.vector(temporal1[[3]][,,3]))
+
+cor(as.vector(temporal1[[3]][,,2]), 
+    as.vector(temporal1[[3]][,,3]))
+
+
+
+laggedCors <- function(temporal_array) {
+  n_clusters <- dim(temporal_array)[3]
+  cor_mat <- matrix(NA, n_clusters, n_clusters)
+  for (i in 1:n_clusters) {
+    for (j in i:n_clusters) {
+      cor_val <- cor(
+        as.vector(temporal_array[,,i]),
+        as.vector(temporal_array[,,j])
+      )
+      cor_mat[i, j] <- cor_val
+      cor_mat[j, i] <- cor_val
+    }
+  }
+  colnames(cor_mat) <- paste0("C", 1:n_clusters)
+  rownames(cor_mat) <- paste0("C", 1:n_clusters)
+  return(cor_mat)
+}
+
+cor2 <- laggedCors(temporal1[[2]])
+cor3 <- laggedCors(temporal1[[3]])
+cor4 <- laggedCors(temporal1[[4]])
+cor5 <- laggedCors(temporal1[[5]])
+
+round(cor3, 2)
+round(cor4, 2)
+round(cor5, 2)
