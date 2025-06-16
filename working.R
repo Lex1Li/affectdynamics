@@ -3347,3 +3347,7 @@ cor5 <- laggedCors(temporal1[[5]])
 round(cor3, 2)
 round(cor4, 2)
 round(cor5, 2)
+
+
+
+temporal1
