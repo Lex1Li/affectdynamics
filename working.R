@@ -3356,9 +3356,9 @@ temporal1
 # R^2 do this for two three and four cluster model
 # -------- Compute Predictions --------
 
-l_pred <- LCVARPred(object = out_1to10,
+trial <- LCVARPred(object = out_seed1,
                     data = data,
-                    k = 4)
+                    k = 3)
 
 
 # ---------- Compute R2 for each person and variable ----------
@@ -3404,3 +3404,126 @@ for(k in 1:4) text(mps[k], 0.7, paste0("Cluster ", k), col=cols_k4[k])
 # dev.off()
 
 
+
+data_s <- data
+
+
+xtm1 <- sweep(data_s[-N, p_loc], 2, mu, "-") - matrix(rep(lin, N-1), ncol=7, byrow=T) * data_s$Time[-N]
+xt <- as.matrix(xtm1) %*% matrix(phi[j, ], nrow=7) + mu[j] + lin[j] * data_s$Time[-1]
+
+xtm1 <- sweep(data_s[-N, p_loc], 2, mu, "-") - matrix(rep(lin, N-1), ncol=4, byrow=T) * data_s$Time[-N]
+
+xt <- as.matrix(xtm1) %*% matrix(phi[j, ], nrow=7) + mu[j] + lin[j] * data_s$Time[-1]
+m_pred[2:N, j] <- as.numeric(xt)
+
+length(p_loc)
+
+
+
+VARPred <- function(mu, lin, phi, data_s, method="matrix") {
+  
+  # Identify predictable time points
+  N <- nrow(data_s)
+  p <- 7
+  p_loc <- 5:11
+  ind_pred <- (data_s$DayNr[-1] == data_s$DayNr[-N]) & ((data_s$Beep[-1] - data_s$Beep[-N]) == 1)
+  ind_pred <- c(NA, ind_pred) # The first is always unpredictable
+  
+  m_pred <- matrix(NA, N, p)
+  # Predict
+  for(j in 1:7) {
+    
+    # ----- Version 1: Element Wise -----
+    if(method=="elementwise") {
+      for(t in 2:N) {
+        xtm1 <- data_s[t-1, p_loc] - mu - lin * data_s$Time[t-1]
+        xt <- sum(phi[j, ] * xtm1) + mu[j] + lin[j] * data_s$Time[t]
+        m_pred[t, j] <- xt
+      }
+    }
+    # ----- Version 2: Vectorized -----
+    if(method=="matrix") {
+      # print(lin)
+      # print(N)
+    
+      xtm1 <- sweep(data_s[-N, p_loc], 2, mu, "-") - matrix(rep(lin, N-1), ncol=p, byrow=TRUE) * data_s$Time[-N]
+      
+      # print(dim(xtm1))
+      # print(length(phi[j, ]))
+      xt <- as.matrix(xtm1) %*% matrix(phi[j, ], nrow=p) + mu[j] + lin[j] * data_s$Time[-1]
+      m_pred[2:N, j] <- as.numeric(xt)
+    }
+  }
+  # Delete inadmissible rows
+  
+  # data_s$Happy[207]
+  # is.na(data_s$Happy)[207]
+  
+  # browser()
+  
+  m_pred[!ind_pred, ] <- NA
+  NAs <- apply(data_s, 1, function(x) any(is.na(x[p_loc])))
+  m_pred[NAs, ] <- NA
+  
+  
+  # Make dataframe
+  out_df <- data.frame(cbind(data_s[, 1:11], m_pred))
+  colnames(out_df)[1:11] <- colnames(data_s)[1:11]
+  colnames(out_df)[12:18] <- paste0(colnames(data_s)[5:11], "_hat")
+  
+  return(out_df)
+  
+} # eoF
+
+
+# Function 2: Get Individual Models
+# Input:
+# LCVAR output object
+# Output:
+# Predictions for all predicable time points of all persons, Using Function 1
+
+
+
+k <- 4
+model_k <- coef.ClusterVAR(out_seed1, Model = rep(1, k))
+c_i <- as.numeric(model_k$Classification)[1]
+
+mu <- model_k$Exogenous_coefficients[, 1, c_i]
+lin <- model_k$Exogenous_coefficients[, 2, c_i]
+phi <- model_k$VAR_coefficients[, , c_i]
+
+
+
+LCVARPred <- function(object, data, k) {
+  
+  # Loop over people
+  u_pers <- unique(data$ID)
+  n_pers <- length(u_pers)
+  
+  l_pred <- list()
+  for(i in 1:n_pers) {
+    
+    ### Get model for person i
+    # Get classification for person i
+    model_k <- coef.ClusterVAR(object, Model = rep(1, k))
+    c_i <- as.numeric(model_k$Classification)[i]
+    # Get model of cluster c for person i
+    mu <- model_k$Exogenous_coefficients[, 1, c_i]
+    lin <- model_k$Exogenous_coefficients[, 2, c_i]
+    phi <- model_k$VAR_coefficients[, , c_i]
+    
+    
+    ### Subset Data
+    data_s <- data[data$ID==u_pers[i], ]
+    
+    ### Make Predictions
+    l_pred[[i]] <- VARPred(mu=mu, lin=lin, phi=phi, data_s=data_s)
+    
+  } # end for
+  
+  ## Return
+  outlist <- list("Predictions"=l_pred,
+                  "Classification"=as.numeric(model_k$Classification))
+  return(outlist)
+  
+} # eof
