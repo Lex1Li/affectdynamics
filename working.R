@@ -3351,3 +3351,56 @@ round(cor5, 2)
 
 
 temporal1
+
+
+# R^2 do this for two three and four cluster model
+# -------- Compute Predictions --------
+
+l_pred <- LCVARPred(object = out_1to10,
+                    data = data,
+                    k = 4)
+
+
+# ---------- Compute R2 for each person and variable ----------
+
+l_R2s <- lapply(l_pred$Predictions, function(x) {
+  R2s <- c(cor(x$Happy_hat, x$Happy, use="complete.obs")^2,
+           cor(x$Relaxed_hat, x$Relaxed, use="complete.obs")^2,
+           cor(x$Sad_hat, x$Sad, use="complete.obs")^2,
+           cor(x$Angry_hat, x$Angry, use="complete.obs")^2)
+  return(R2s)
+})
+m_R2s <- do.call(rbind, l_R2s)
+colnames(m_R2s) <- vars_em
+
+# Plotting
+df_R2 <- data.frame(values = as.vector(m_R2s),
+                    Variables = rep(colnames(m_R2s), each = nrow(m_R2s)),
+                    Clusters = rep(l_pred$Classification, times = ncol(m_R2s)))
+
+mean(df_R2[df_R2$Clusters==3 & df_R2$Variables=="Happy",]$values)
+
+# For plotting replace Variables with integers, to avoid sorting issue
+df_R2_plot <- df_R2
+df_R2_plot$Variables[df_R2_plot$Variables=="Happy"] <- 1
+df_R2_plot$Variables[df_R2_plot$Variables=="Relaxed"] <- 2
+df_R2_plot$Variables[df_R2_plot$Variables=="Sad"] <- 3
+df_R2_plot$Variables[df_R2_plot$Variables=="Angry"] <- 4
+
+# pdf("Figures/Fig_ResAnalysis_R2.pdf", width = 7, height=5)
+
+boxplot(values ~ Variables + Clusters,  # Specify groups and subgroups
+        data = df_R2_plot, las=2, axes=FALSE, xlab="", ylab="", col=rep(cols_k4, each=4), ylim=c(0, .7))
+grid()
+boxplot(values ~ Variables + Clusters,  # Specify groups and subgroups
+        data = df_R2_plot, las=2, axes=FALSE, xlab="", ylab="", col=rep(cols_k4, each=4), ylim=c(0, .7), add=TRUE)
+axis(1, 1:16, rep(vars_em, times=4), las=2)
+axis(2, las=2)
+title(ylab="Proportion of Explained Variance")
+mp <- seq(1, 16, length=9)
+mps <- mp[c(2, 4, 6, 8)]
+for(k in 1:4) text(mps[k], 0.7, paste0("Cluster ", k), col=cols_k4[k])
+
+# dev.off()
+
+
