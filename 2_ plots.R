@@ -512,3 +512,53 @@ polygon(
   col = rgb(0.3, 0.6, 1, 0.2),
   border = NA
 )
+
+
+
+
+
+#########################################################################
+#                8. PREDICTION VS OBSERVED 4 PARTICIPANTS               #
+#########################################################################
+pdf("/Users/Lexi/Desktop/internship/4_ plots/20_ predictions 4p.pdf", width=8, height = 9)
+
+# Layout
+lmat <- matrix(5:16, 4, 3, byrow = TRUE)
+lmat <- cbind(1:4, lmat)
+lo <- layout(lmat, widths = c(0.15, 1, .25, 1), heights = c(1,1,1,1))
+# layout.show(lo)
+
+for(j in 1:4)   plotLabel(paste0("Cluster ", j), srt = 90)
+
+
+# plot
+indices <- match(id4, id)
+
+for(j in 1:4) {
+  data_res_j <- pred4$Predictions[[indices[j]]]
+  
+  PlotTS_Flex(data = data_res_j,
+              IDcol = "ID",
+              ID = id4[j], # Subject number, here fixed
+              variable = "Happy", # Variable
+              variable2 = "Happy_hat",
+              layout = FALSE,
+              title = FALSE,
+              ylab = TRUE,
+              xlim = c(1,70),
+              trend=FALSE,
+              resLegend = c(FALSE, TRUE, FALSE, FALSE)[j])
+  plotBV_flex(data=data_res_j,
+              IDcol = "ID",
+              ID = id4[j], # Subject number, here fixed
+              variable1 = "Happy_hat",
+              variable2 = "Happy", # Variable
+              lag=FALSE,
+              title=FALSE,
+              para=FALSE,
+              fit= FALSE,
+              diag = TRUE,
+              R2=TRUE)
+}
+
+dev.off()

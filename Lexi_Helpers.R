@@ -45,20 +45,20 @@ PlotTS_Flex <- function(data,
   
   # Second variable (I will use that for predictions later)
   if(!is.null(variable2)) lines(data_ss[, variable2], col="orange")
-
+  
   if(trend) {
     time <- 1:nrow(data_ss)
     lm_obj <- lm(data_ss[, variable]~time)
     abline(lm_obj, lwd=1, col="black", lty=2)
   }
-
+  
   if(resLegend) legend("topright", legend=c("Data", "Predictions"), bty="n", text.col=c("black", "orange"))
-
+  
   if(!is.null(title)) {
-    if(title==TRUE) title(main=paste0(variable), font.main=1)
+    if(title==TRUE) title(main=paste0(variable, " (person = ", u_pers[j], ")"), font.main=1)
     if(class(title) == "character") title(title, , font.main=1)
   }
-
+  
   
   # Marginal
   par(mar=c(4,0,2,2))
