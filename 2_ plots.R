@@ -168,6 +168,33 @@ for(i in 1:4)   plotLabel(paste0("Cluster ", i, " (ID = ", id4[i], ")"), ypos = 
 dev.off()
 
 
+# participant 39 for paper
+
+
+# Make Layout
+lmat <- matrix(1:16, 2, 8, byrow = TRUE)
+lo <- layout(lmat, widths = c(1, .25, 1, .25, 1, .25, 1, .25), heights = c(1,1))
+
+# ID panel
+par(mar = c(0, 0, 0, 0))  # remove all margins
+plot.new()
+text(0.6, 0.6, paste("Participant ID: 39"), cex = 1, font = 2)
+plot.new()
+
+# Make plot for person j
+for(i in 1:7)   PlotTS_Flex(data = data,
+                            IDcol = "ID",
+                            ID = 39, # Subject number, here fixed
+                            variable = variables[i], # Variable
+                            layout = FALSE,
+                            title = TRUE,
+                            ylab = TRUE,
+                            xlab = TRUE,
+                            xlim = c(1, 80))
+
+
+
+
 ######################################################################
 #                4. BV PLOTS FOR ALL AFFECT AND ALL N                #
 ######################################################################
@@ -474,9 +501,9 @@ dev.off()
 
 
 
-#################################################
-#                8. SCALED BIC CI               #
-#################################################
+#########################################################
+#                8. SCALED BIC AND NLL CI               #
+#########################################################
 BIC_robustness <- apply(BIC_1to8, 2, function(col) col / max(col))
 
 BIC_mean <- apply(BIC_robustness, 1, mean)
@@ -509,6 +536,44 @@ lines((1:K), BIC_mean, col="#E41A1C", lwd=1.5)
 polygon(
   c(1:K, rev(1:K)),
   c(BIC_lower, rev(BIC_higher)),
+  col = rgb(0.3, 0.6, 1, 0.2),
+  border = NA
+)
+
+
+
+
+# NLL robustness
+NLL_mean <- apply(scaledNLL_1to8, 1, mean)
+NLL_se <- apply(scaledNLL_1to8, 1, function(x) sd(x) / sqrt(30))
+
+NLL_lower <- NLL_mean - qnorm(0.975) * NLL_se
+NLL_higher <- NLL_mean + qnorm(0.975) * NLL_se
+
+
+# ----- set layout -----
+plot.new()
+ymax <- 1
+ymin <- 0.96
+
+K <- nrow(scaledNLL_1to8)
+plot.window(xlim=c(1,K), ylim=c(ymin, ymax))
+
+axis(1, 1:K)
+axis(2, las=2)
+grid()
+
+title(xlab="Number of clusters", line=2.5)
+title("Scaled NLL", font.main=1)
+
+
+# ----- plot -----
+points((1:K), NLL_mean, col="#E41A1C", pch=16, cex=1.25)
+lines((1:K), NLL_mean, col="#E41A1C", lwd=1.5)
+
+polygon(
+  c(1:K, rev(1:K)),
+  c(NLL_lower, rev(NLL_higher)),
   col = rgb(0.3, 0.6, 1, 0.2),
   border = NA
 )

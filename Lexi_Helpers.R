@@ -55,7 +55,7 @@ PlotTS_Flex <- function(data,
   if(resLegend) legend("topright", legend=c("Data", "Predictions"), bty="n", text.col=c("black", "orange"))
   
   if(!is.null(title)) {
-    if(title==TRUE) title(main=paste0(variable, " (person = ", u_pers[j], ")"), font.main=1)
+    if(title==TRUE) title(main=paste0(variable), font.main=1)
     if(class(title) == "character") title(title, , font.main=1)
   }
   
