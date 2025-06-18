@@ -340,7 +340,7 @@ alt <- brm(CESD ~ Cluster, data = external2, family = gaussian(), chains = 4, it
 
 # Get BF
 bf2 <- bayes_factor(alt, null)
-round(bf$bf)
+round(bf2$bf)
 
 ## With Covariates
 null_cov <- brm(CESD ~ 1 + Happy + Relaxed + Sad + Angry + Anxious + Depressed + Stressed, data = external2, family = gaussian(), chains = 4, iter = 2000)
@@ -348,7 +348,7 @@ alt_cov <- brm(CESD ~ Cluster + Happy + Relaxed + Sad + Angry + Anxious + Depres
 
 # Get BF
 bf_cov2 <- bayes_factor(alt_cov, null_cov)
-round(bf_cov$bf)
+# round(bf_cov2$bf)
 
 
 
@@ -371,7 +371,7 @@ alt3 <- brm(CESD ~ Cluster, data = external3, family = gaussian(), chains = 4, i
 
 # Get BF
 bf3 <- bayes_factor(alt3, null3)
-round(bf3$bf)
+# round(bf3$bf)
 
 ## With Covariates
 null_cov3 <- brm(CESD ~ 1 + Happy + Relaxed + Sad + Angry + Anxious + Depressed + Stressed, data = external3, family = gaussian(), chains = 4, iter = 2000)
@@ -379,7 +379,7 @@ alt_cov3 <- brm(CESD ~ Cluster + Happy + Relaxed + Sad + Angry + Anxious + Depre
 
 # Get BF
 bf_cov3 <- bayes_factor(alt_cov3, null_cov3)
-round(bf_cov3$bf)
+# round(bf_cov3$bf)
 
 
 
@@ -403,7 +403,7 @@ alt4 <- brm(CESD ~ Cluster, data = external4, family = gaussian(), chains = 4, i
 
 # Get BF
 bf4 <- bayes_factor(alt4, null4)
-round(bf$bf)
+# round(bf4$bf)
 
 ## With Covariates
 null_cov4 <- brm(CESD ~ 1 + Happy + Relaxed + Sad + Angry + Anxious + Depressed + Stressed, data = external4, family = gaussian(), chains = 4, iter = 2000)
@@ -411,7 +411,7 @@ alt_cov4 <- brm(CESD ~ Cluster + Happy + Relaxed + Sad + Angry + Anxious + Depre
 
 # Get BF
 bf_cov4 <- bayes_factor(alt_cov4, null_cov4)
-round(bf_cov4$bf)
+# round(bf_cov4$bf)
 
 
 bfs <- matrix(
@@ -535,6 +535,16 @@ class4 <- data.frame(id = as.numeric(rownames(clas4)),
 merged_classes <- merge(class3, class4, by = "id", suffixes = c("_3", "_4"))
 cross_mat <- addmargins(table(merged_classes$classification_3, merged_classes$classification_4))
 
+library(xtable)
+print(xtable(cross_mat, 
+             caption = "Cross-classification matrix of cluster assignments between the 3-cluster and 4-cluster models.",
+             label = "tab:crossmat",
+             align = c("l", rep("c", ncol(cross_mat)))), 
+      include.rownames = TRUE, 
+      include.colnames = TRUE, 
+      caption.placement = "top",
+      hline.after = c(-1,0,nrow(cross_mat)))
+
 
 
 
@@ -642,7 +652,7 @@ df2_plot$Variables[df2_plot$Variables=="Depressed"] <- 6
 df2_plot$Variables[df2_plot$Variables=="Stressed"] <- 7
 
 # plot
-pdf("/Users/Lexi/Desktop/internship/4_ plots/19a_ r2 two clusters.pdf", width=5, height=5)
+pdf("/Users/Lexi/Desktop/internship/4_ plots/19a_ r2 two clusters.pdf", width=7, height=5)
 cols_k2 <- RColorBrewer::brewer.pal(2, "Set2")
 
 boxplot(values ~ Variables + Clusters,  # Specify groups and subgroups

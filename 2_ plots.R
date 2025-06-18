@@ -233,7 +233,6 @@ var_names <- c("Happy", "Relaxed", "Sad", "Angry", "Anxious", "Depressed", "Stre
 
 
 pdf("/Users/Lexi/Desktop/internship/4_ plots/8a_ cluster coefs.pdf", width=8, height=8)
-PlotCOEFS(out_seed1, 2, labels = variables)
 PlotCOEFS(out_seed1, 2, labels = variables, small_difference_to_white = TRUE)
 dev.off()
 
@@ -386,6 +385,10 @@ dev.off()
 variables <- c("Happy", "Relaxed", "Sad", "Angry", "Anxious", "Depressed", "Stressed")
 
 pdf("/Users/Lexi/Desktop/internship/4_ plots/11a_ contemporaneous effect.pdf", width=6, height=6)
+PlotCONTEMPORANEOUS(out_seed1, 2, labels = variables, small_difference_to_white = TRUE)
+dev.off()
+
+pdf("/Users/Lexi/Desktop/internship/4_ plots/o_compt2.pdf", width=6, height=6)
 PlotCONTEMPORANEOUS(out_seed1, 2, labels = variables)
 dev.off()
 
@@ -627,3 +630,26 @@ for(j in 1:4) {
 }
 
 dev.off()
+
+
+
+
+
+
+#############################################################################
+#                9. CLUSTER 2 CONTEMPORANEOUS INTERPRETATION                #
+#############################################################################
+cont4 <- contemporaneous1[[4]]
+cont4[,,1]
+
+c12 <- cont4[,,1] - cont4[,,2]
+c32 <- cont4[,,3] - cont4[,,2]
+
+layout(matrix(1:2, ncol=2))
+PlotHEAT(c12, main = "Cluster 1 - 2", labels = variables, small_difference_to_white = T)
+PlotHEAT(c32, main = "Cluster 3 - 2", labels = variables, small_difference_to_white = T)
+
+
+layout(matrix(1:2, ncol=2))
+PlotHEAT(c12, main = "Cluster 1 - 2", labels = variables, pcor = T)
+PlotHEAT(c32, main = "Cluster 3 - 2", labels = variables, pcor = T)
