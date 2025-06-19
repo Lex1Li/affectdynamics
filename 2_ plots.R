@@ -282,7 +282,7 @@ dev.off()
 ###############################################################
 #                5. COLLAPSED TIME SERIES PLOTS               #
 ###############################################################
-pdf("/Users/Lexi/Desktop/internship/4_ plots/10_ collapsed timeseries.pdf", width=12, height=14)
+pdf("/Users/Lexi/Desktop/internship/4_ plots/o_ts.pdf", width=12, height=14)
 
 variables <- c("Happy", "Relaxed", "Sad", "Angry", "Anxious", "Depressed", "Stressed")
 cluster_range <- 2:6
@@ -298,9 +298,9 @@ for (nClusters in cluster_range) {
         variable = variable,
         show_legend = FALSE,
         plot_margin = c(0.05, 0.05, 0.05, 0.05),
+        title = paste0("Cluster ", clusterToPlot),
         remove_xlab = TRUE,
-        title = "MSD",
-        opaqueness = 0.8
+        opaqueness = 1
       )
       if (is.null(p)) p <- grid::nullGrob()
       plot_list[[length(plot_list) + 1]] <- p
