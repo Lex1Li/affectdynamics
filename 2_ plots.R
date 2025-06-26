@@ -653,3 +653,68 @@ PlotHEAT(c32, main = "Cluster 3 - 2", labels = variables, small_difference_to_wh
 layout(matrix(1:2, ncol=2))
 PlotHEAT(c12, main = "Cluster 1 - 2", labels = variables, pcor = T)
 PlotHEAT(c32, main = "Cluster 3 - 2", labels = variables, pcor = T)
+
+
+
+#################################################################################
+#                10. COLLAPSED TIME SERIES FOR RESIDUAL ANALYSIS                #
+#################################################################################
+
+p1 <- PlotCOLLAPSED(
+  model = out_seed1,
+  nClusters = 4,
+  clusterToPlot = 2,
+  data = affect,
+  PID = "PID",
+  timepoints = "OCCASION",
+  variable = "Anxious",
+  random = FALSE,
+  title = "Cluster 2, Anxious",
+  show_legend = FALSE,
+  plot_margin = c(0.5, 0.5, 0.5, 0.5)
+)
+
+p2 <- PlotCOLLAPSED(
+  model = out_seed1,
+  nClusters = 4,
+  clusterToPlot = 2,
+  data = affect,
+  PID = "PID",
+  timepoints = "OCCASION",
+  variable = "Stressed",
+  random = FALSE,
+  title = "Cluster 2, Stressed",
+  show_legend = FALSE,
+  plot_margin = c(0.5, 0.5, 0.5, 0.5)
+)
+
+p3 <- PlotCOLLAPSED(
+  model = out_seed1,
+  nClusters = 4,
+  clusterToPlot = 1,
+  data = affect,
+  PID = "PID",
+  timepoints = "OCCASION",
+  variable = "Sad",
+  random = FALSE,
+  title = "Cluster 1, Sad",
+  show_legend = FALSE,
+  plot_margin = c(0.5, 0.5, 0.5, 0.5)
+)
+
+p4 <- PlotCOLLAPSED(
+  model = out_seed1,
+  nClusters = 4,
+  clusterToPlot = 3,
+  data = affect,
+  PID = "PID",
+  timepoints = "OCCASION",
+  variable = "Sad",
+  random = FALSE,
+  title = "Cluster 3, Sad",
+  show_legend = FALSE,
+  plot_margin = c(0.5, 0.5, 0.5, 0.5)
+)
+
+grid.arrange(p1, p2, p3, p4, ncol = 4)
+

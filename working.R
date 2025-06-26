@@ -3789,3 +3789,50 @@ for(j in 1:4) {
 }
 
 dev.off()
+
+
+
+###### mean anxiety cluster 2 four cluster model ###### 
+# example of low
+# ex 1
+four_c2 <- affect4[affect4$Cluster4 == 2,]
+mean(four_c2$Anxious, na.rm = TRUE)
+
+
+four_c2_anxietyr2 <- df4_plot[df4_plot$Variables == 5 & df4_plot$Clusters == 2, 1]
+boxplot.stats(four_c2_anxietyr2)$stats
+
+# ex 2
+mean(four_c2$Stressed, na.rm = TRUE)
+
+four_c2_stressr2 <- df4_plot[df4_plot$Variables == 7 & df4_plot$Clusters == 2, 1]
+boxplot.stats(four_c2_stressr2)$stats
+
+
+
+# example of high
+# ex 3
+four_c1 <- affect4[affect4$Cluster4 == 1,]
+mean(four_c2$Sad, na.rm = TRUE)
+
+four_c1_sad <- df4_plot[df4_plot$Variables == 3 & df4_plot$Clusters == 1, 1]
+boxplot.stats(four_c1_sad)$stats
+
+# ex 4
+four_c3 <- affect4[affect4$Cluster4 == 3,]
+mean(four_c3$Sad, na.rm = TRUE)
+
+four_c3_sad <- df4_plot[df4_plot$Variables == 3 & df4_plot$Clusters == 3, 1]
+boxplot.stats(four_c3_sad)$stats
+
+
+residual_v <- c(12.41935, 0.03225707155, 0.00330420734, 0.06042089675,
+                27.27605, 0.0705222811, 0.0329697880, 0.1319959783,
+                14.24055, 0.166146556, 0.111047965, 0.389560063,
+                30.90565, 0.1526054926, 0.0334452887, 0.2957418391)
+
+residual_mat <- matrix(round(residual_v, 3), nrow = 4, 4, byrow = TRUE)
+
+residual_df <- as.data.frame(residual_mat)
+
+
