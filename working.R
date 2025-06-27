@@ -3983,3 +3983,19 @@ print(
   hline.after = c(-1,0,nrow(na_table))
 )
 # ...existing code...
+
+
+
+
+length(unique(affect4$PID[affect4$Cluster4 == 3]))
+
+
+
+library(mnet)
+head(dataKoval13)
+dataKoval13 <- dataKoval13
+
+sum(cesd$CESD_original >= 16)
+
+cesd$CESD_original <- cesd$CESD * 20
+

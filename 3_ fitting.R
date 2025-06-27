@@ -331,66 +331,66 @@ for(k in 1:K) l_coefs[[k]] <- coef.ClusterVAR(out_seed1, Model = rep(1, k))
 
 
 
-### --- 2 CLUSTERS --- ### 
-k <- 2
-cmemb2 <- as.numeric(l_coefs[[k]]$Classification)
-
-external2 <- cbind(MEANS, DEP, as.factor(cmemb2))[, -9]
-colnames(external2) <- c("PID", "Happy", "Relaxed", "Sad", "Angry", "Anxious", "Depressed", "Stressed", "CESD", "Cluster")
-head(external2)
-
-
-# ----- Test whether DASS-scales are different across clusters -----
-set.seed(12345)
-
-## Baseline
-# Fit models
-null <- brm(CESD ~ 1, data = external2, family = gaussian(), chains = 4, iter = 2000)
-alt <- brm(CESD ~ Cluster, data = external2, family = gaussian(), chains = 4, iter = 2000)
-
-# Get BF
-bf2 <- bayes_factor(alt, null)
-round(bf2$bf)
-
-## With Covariates
-null_cov <- brm(CESD ~ 1 + Happy + Relaxed + Sad + Angry + Anxious + Depressed + Stressed, data = external2, family = gaussian(), chains = 4, iter = 2000)
-alt_cov <- brm(CESD ~ Cluster + Happy + Relaxed + Sad + Angry + Anxious + Depressed + Stressed, data = external2, family = gaussian(), chains = 4, iter = 2000)
-
-# Get BF
-bf_cov2 <- bayes_factor(alt_cov, null_cov)
-# round(bf_cov2$bf)
-
-
-
-### --- 3 CLUSTERS --- ### 
-k <- 3
-cmemb3 <- as.numeric(l_coefs[[k]]$Classification)
-
-external3 <- cbind(MEANS, DEP, as.factor(cmemb3))[, -9]
-colnames(external3) <- c("PID", "Happy", "Relaxed", "Sad", "Angry", "Anxious", "Depressed", "Stressed", "CESD", "Cluster")
-head(external3)
-
-
-# ----- Test whether DASS-scales are different across clusters -----
-set.seed(12345)
-
-## Baseline
-# Fit models
-null3 <- brm(CESD ~ 1, data = external3, family = gaussian(), chains = 4, iter = 2000)
-alt3 <- brm(CESD ~ Cluster, data = external3, family = gaussian(), chains = 4, iter = 2000)
-
-# Get BF
-bf3 <- bayes_factor(alt3, null3)
-# round(bf3$bf)
-
-## With Covariates
-null_cov3 <- brm(CESD ~ 1 + Happy + Relaxed + Sad + Angry + Anxious + Depressed + Stressed, data = external3, family = gaussian(), chains = 4, iter = 2000)
-alt_cov3 <- brm(CESD ~ Cluster + Happy + Relaxed + Sad + Angry + Anxious + Depressed + Stressed, data = external3, family = gaussian(), chains = 4, iter = 2000)
-
-# Get BF
-bf_cov3 <- bayes_factor(alt_cov3, null_cov3)
-# round(bf_cov3$bf)
-
+# ### --- 2 CLUSTERS --- ### 
+# k <- 2
+# cmemb2 <- as.numeric(l_coefs[[k]]$Classification)
+# 
+# external2 <- cbind(MEANS, DEP, as.factor(cmemb2))[, -9]
+# colnames(external2) <- c("PID", "Happy", "Relaxed", "Sad", "Angry", "Anxious", "Depressed", "Stressed", "CESD", "Cluster")
+# head(external2)
+# 
+# 
+# # ----- Test whether DASS-scales are different across clusters -----
+# set.seed(12345)
+# 
+# ## Baseline
+# # Fit models
+# null <- brm(CESD ~ 1, data = external2, family = gaussian(), chains = 4, iter = 2000)
+# alt <- brm(CESD ~ Cluster, data = external2, family = gaussian(), chains = 4, iter = 2000)
+# 
+# # Get BF
+# bf2 <- bayes_factor(alt, null)
+# round(bf2$bf)
+# 
+# ## With Covariates
+# null_cov <- brm(CESD ~ 1 + Happy + Relaxed + Sad + Angry + Anxious + Depressed + Stressed, data = external2, family = gaussian(), chains = 4, iter = 2000)
+# alt_cov <- brm(CESD ~ Cluster + Happy + Relaxed + Sad + Angry + Anxious + Depressed + Stressed, data = external2, family = gaussian(), chains = 4, iter = 2000)
+# 
+# # Get BF
+# bf_cov2 <- bayes_factor(alt_cov, null_cov)
+# # round(bf_cov2$bf)
+# 
+# 
+# 
+# ### --- 3 CLUSTERS --- ### 
+# k <- 3
+# cmemb3 <- as.numeric(l_coefs[[k]]$Classification)
+# 
+# external3 <- cbind(MEANS, DEP, as.factor(cmemb3))[, -9]
+# colnames(external3) <- c("PID", "Happy", "Relaxed", "Sad", "Angry", "Anxious", "Depressed", "Stressed", "CESD", "Cluster")
+# head(external3)
+# 
+# 
+# # ----- Test whether DASS-scales are different across clusters -----
+# set.seed(12345)
+# 
+# ## Baseline
+# # Fit models
+# null3 <- brm(CESD ~ 1, data = external3, family = gaussian(), chains = 4, iter = 2000)
+# alt3 <- brm(CESD ~ Cluster, data = external3, family = gaussian(), chains = 4, iter = 2000)
+# 
+# # Get BF
+# bf3 <- bayes_factor(alt3, null3)
+# # round(bf3$bf)
+# 
+# ## With Covariates
+# null_cov3 <- brm(CESD ~ 1 + Happy + Relaxed + Sad + Angry + Anxious + Depressed + Stressed, data = external3, family = gaussian(), chains = 4, iter = 2000)
+# alt_cov3 <- brm(CESD ~ Cluster + Happy + Relaxed + Sad + Angry + Anxious + Depressed + Stressed, data = external3, family = gaussian(), chains = 4, iter = 2000)
+# 
+# # Get BF
+# bf_cov3 <- bayes_factor(alt_cov3, null_cov3)
+# # round(bf_cov3$bf)
+# 
 
 
 
@@ -441,8 +441,8 @@ colnames(bfs) <- c("Base", "Covar")
 
 
 ### mean cesd by cluster
-tapply(external2$CESD, external2$Cluster, mean, na.rm = TRUE)
-tapply(external3$CESD, external3$Cluster, mean, na.rm = TRUE)
+# tapply(external2$CESD, external2$Cluster, mean, na.rm = TRUE)
+# tapply(external3$CESD, external3$Cluster, mean, na.rm = TRUE)
 tapply(external4$CESD, external4$Cluster, mean, na.rm = TRUE)
 
 

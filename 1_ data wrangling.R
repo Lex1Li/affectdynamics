@@ -11,7 +11,7 @@ load("/Users/Lexi/Desktop/internship/5_ results/3outs.RData")
 #                  1. LOAD DATA                  #
 ##################################################
 affect <- read.csv("/Users/Lexi/Desktop/internship/4_ data0314/affect.csv", sep =";")
-cesd <- read.csv("/Users/Lexi/Desktop/internship/4_ data0314/cesd.csv", sep =";")
+cesd <- read.csv("/Users/Lexi/Desktop/internship/1_ data/cesd.csv", sep =";")
 
 
 
@@ -40,12 +40,7 @@ source("/Users/Lexi/Desktop/internship/internship/Lexi_Helpers.R")
   # mean 14.52 
   # sd 9.78
 
-reverse <- function(standardised_values, mean, sd) {
-  original_values <- (standardised_values * sd) + mean
-  return(original_values)
-}
-
-cesd$original <- reverse(cesd$CESD, 14.52, 9.78)
+cesd$original <- cesd$CESD * 20
 
 
 
