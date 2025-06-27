@@ -3836,3 +3836,150 @@ residual_mat <- matrix(round(residual_v, 3), nrow = 4, 4, byrow = TRUE)
 residual_df <- as.data.frame(residual_mat)
 
 
+
+
+
+
+
+### descriptives for 4 cluster model
+
+
+# Combine all ranked tables into one
+ranked_table <- bind_rows(
+  lapply(names(ranked4), function(var) {
+    df <- ranked4[[var]][, c("Rank", "Cluster4", "mean")]
+    df$Variable <- var
+    df
+  })
+)
+
+# Reorder columns for APA style
+ranked_table <- ranked_table %>%
+  select(Variable, Rank, Cluster4, mean) %>%
+  arrange(Variable, Rank)
+
+# Print APA-style table using xtable
+library(xtable)
+print(
+  xtable(ranked_table, 
+         caption = "Ranked means for each variable by cluster (4-cluster solution).",
+         label = "tab:ranked_means",
+         digits = c(0, 0, 0, 0, 2)),
+  include.rownames = FALSE,
+  caption.placement = "top",
+  align = c("l", "l", "c", "c", "c"),
+  hline.after = c(-1,0,nrow(ranked_table))
+)
+
+
+
+# ...existing code...
+
+# Calculate mean PA and mean NA for each cluster
+descriptives4$mean_PA <- rowMeans(descriptives4[, c("Happy_mean", "Relaxed_mean")], na.rm = TRUE)
+descriptives4$mean_NA <- rowMeans(descriptives4[, c("Sad_mean", "Angry_mean", "Anxious_mean", "Depressed_mean", "Stressed_mean")], na.rm = TRUE)
+
+# Make concise table
+concise_table <- descriptives4 %>%
+  select(Cluster4, mean_PA, mean_NA)
+
+# Print APA-style table
+library(xtable)
+print(
+  xtable(concise_table, 
+         caption = "Mean Positive Affect (PA) and Negative Affect (NA) by cluster (4-cluster solution).",
+         label = "tab:mean_pa_na",
+         digits = c(0, 0, 2, 2)),
+  include.rownames = FALSE,
+  caption.placement = "top",
+  align = c("l", "c", "c", "c"),
+  hline.after = c(-1,0,nrow(concise_table))
+)
+# ...existing code...
+
+
+
+
+
+# ...existing code...
+
+# Calculate mean PA and mean NA for each cluster
+descriptives4$mean_PA <- rowMeans(descriptives4[, c("Happy_mean", "Relaxed_mean")], na.rm = TRUE)
+descriptives4$mean_NA <- rowMeans(descriptives4[, c("Sad_mean", "Angry_mean", "Anxious_mean", "Depressed_mean", "Stressed_mean")], na.rm = TRUE)
+
+# Make concise table and order by mean_PA descending
+concise_table <- descriptives4 %>%
+  select(Cluster4, mean_PA, mean_NA) %>%
+  arrange(desc(mean_PA))
+
+# Print APA-style table
+library(xtable)
+print(
+  xtable(concise_table, 
+         caption = "Mean Positive Affect (PA) and Negative Affect (NA) by cluster (ordered by PA, 4-cluster solution).",
+         label = "tab:mean_pa_na",
+         digits = c(0, 0, 2, 2)),
+  include.rownames = FALSE,
+  caption.placement = "top",
+  align = c("l", "c", "c", "c"),
+  hline.after = c(-1,0,nrow(concise_table))
+)
+# ...existing code...
+
+
+
+
+
+# ...existing code...
+
+# Table of PA variables (Happy, Relaxed), ordered by mean PA
+pa_table <- descriptives4 %>%
+  select(Cluster4, Happy = Happy_mean, Relaxed = Relaxed_mean) %>%
+  mutate(mean_PA = rowMeans(select(., Happy, Relaxed), na.rm = TRUE)) %>%
+  arrange(desc(mean_PA)) %>%
+  select(Cluster4, Happy, Relaxed) # Drop mean_PA from output
+
+# Print APA-style table
+library(xtable)
+print(
+  xtable(pa_table,
+         caption = "Cluster means for Happy and Relaxed (ordered by mean PA, 4-cluster solution).",
+         label = "tab:pa_means",
+         digits = c(0, 0, 2, 2)),
+  include.rownames = FALSE,
+  caption.placement = "top",
+  align = c("l", "c", "c", "c"),
+  hline.after = c(-1,0,nrow(pa_table))
+)
+# ...existing code...
+
+
+
+# ...existing code...
+
+# Table of NA variables (Sad, Angry, Anxious, Depressed, Stressed), ordered by mean NA
+na_vars <- c("Sad", "Angry", "Anxious", "Depressed", "Stressed")
+na_table <- descriptives4 %>%
+  select(Cluster4, 
+         Sad = Sad_mean, 
+         Angry = Angry_mean, 
+         Anxious = Anxious_mean, 
+         Depressed = Depressed_mean, 
+         Stressed = Stressed_mean) %>%
+  mutate(mean_NA = rowMeans(select(., Sad, Angry, Anxious, Depressed, Stressed), na.rm = TRUE)) %>%
+  arrange(desc(mean_NA)) %>%
+  select(Cluster4, Sad, Angry, Anxious, Depressed, Stressed) # Drop mean_NA from output
+
+# Print APA-style table
+library(xtable)
+print(
+  xtable(na_table,
+         caption = "Cluster means for Negative Affect variables (ordered by mean NA, 4-cluster solution).",
+         label = "tab:na_means",
+         digits = c(0, 0, 2, 2, 2, 2, 2)),
+  include.rownames = FALSE,
+  caption.placement = "top",
+  align = c("l", "c", "c", "c", "c", "c", "c"),
+  hline.after = c(-1,0,nrow(na_table))
+)
+# ...existing code...

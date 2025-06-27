@@ -883,3 +883,10 @@ skew(four_c2$Stressed, na.rm = TRUE)
 
 skew(four_c2$Sad, na.rm = TRUE)
 skew(four_c3$Sad, na.rm = TRUE)
+
+
+skew(four_c1[6:12])
+skew(four_c2[6:12])
+skew(four_c3[6:12])
+skew(four_c4[6:12])
+
