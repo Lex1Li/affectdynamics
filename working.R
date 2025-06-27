@@ -2615,7 +2615,7 @@ ggplot(classproportions1_long, aes(x = Cluster, y = Proportion, fill = Class)) +
     position = position_stack(vjust = 1), # slightly above each section
     hjust = 0.5,   # left align
     vjust = 1.7,   # top align
-    color = "white",
+    color = "black",
     size = 5
   ) +
   labs(title = "Seed 1",

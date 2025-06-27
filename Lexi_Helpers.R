@@ -97,7 +97,7 @@ PlotScaled <- function(model, title = NULL) {
   K <- length(BIC)
   plot.new()
   ymax <- 1
-  ymin <- min(c(negLL_scaled, BIC_scaled))
+  ymin <- min(c(negLL_scaled, BIC_scaled)-0.005)
   
   plot.window(xlim=c(1,K), ylim=c(ymin, ymax))
   axis(1, 1:K)
@@ -110,20 +110,25 @@ PlotScaled <- function(model, title = NULL) {
   shift <- 0 # why add/subtract shift?
   
   # negLL
-  points((1:K)-shift, negLL_scaled, pch=16, cex=1.25)
-  lines((1:K)-shift, negLL_scaled, lwd=2)
+  points((1:K)-shift, negLL_scaled, pch=15, cex=1.25, col = "#377EB8")
+  lines((1:K)-shift, negLL_scaled, lwd=2, col = "#377EB8")
   
   # BIC
-  points((1:K)+shift, BIC_scaled, col="tomato", pch=16, cex=1.25)
-  lines((1:K)+shift, BIC_scaled, col="tomato", lwd=2)
+  points((1:K)+shift, BIC_scaled, col= "#E41A1C", pch=16, cex=1.25)
+  lines((1:K)+shift, BIC_scaled, col= "#E41A1C", lwd=2)
   
   # legend
-  legend("topright", legend=c("Negative LL (scaled)", "BIC (scaled)"),
-         text.col=c("black", "tomato"), bty="n", cex=1)
+  legend("topright",
+         legend = c("BIC", "NLL"),
+         col = c("#E41A1C", "#377EB8"),
+         pch = c(16, 15),
+         lwd = 2,
+         bty = "n"
+  )
 }
 
 
-PlotScaled(out_seed1, title = "Random Seed 1")
+PlotScaled(out_seed1, title = "BIC and NLL")
 
 
 

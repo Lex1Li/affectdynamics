@@ -232,7 +232,7 @@ dev.off()
 var_names <- c("Happy", "Relaxed", "Sad", "Angry", "Anxious", "Depressed", "Stressed")
 
 
-pdf("/Users/Lexi/Desktop/internship/4_ plots/8a_ cluster coefs.pdf", width=8, height=8)
+pdf("/Users/Lexi/Desktop/internship/4_ plots/8a_ cluster coefs.pdf", width=6, height=6)
 PlotCOEFS(out_seed1, 2, labels = variables, small_difference_to_white = TRUE)
 dev.off()
 
@@ -507,13 +507,14 @@ dev.off()
 #########################################################
 #                8. SCALED BIC AND NLL CI               #
 #########################################################
+
 BIC_robustness <- apply(BIC_1to8, 2, function(col) col / max(col))
 
 BIC_mean <- apply(BIC_robustness, 1, mean)
-BIC_se <- apply(BIC_robustness, 1, function(x) sd(x) / sqrt(30))
+BIC_sd <- apply(BIC_robustness, 1, sd)
 
-BIC_lower <- BIC_mean - qnorm(0.975) * BIC_se
-BIC_higher <- BIC_mean + qnorm(0.975) * BIC_se
+BIC_lower <- BIC_mean - BIC_sd
+BIC_higher <- BIC_mean + BIC_sd
 
 
 # ----- set layout -----
@@ -548,10 +549,10 @@ polygon(
 
 # NLL robustness
 NLL_mean <- apply(scaledNLL_1to8, 1, mean)
-NLL_se <- apply(scaledNLL_1to8, 1, function(x) sd(x) / sqrt(30))
+NLL_sd <- apply(scaledNLL_1to8, 1, sd)
 
-NLL_lower <- NLL_mean - qnorm(0.975) * NLL_se
-NLL_higher <- NLL_mean + qnorm(0.975) * NLL_se
+NLL_lower <- NLL_mean - NLL_sd
+NLL_higher <- NLL_mean + NLL_sd
 
 
 # ----- set layout -----
@@ -580,6 +581,50 @@ polygon(
   col = rgb(0.3, 0.6, 1, 0.2),
   border = NA
 )
+
+
+
+# ----- on one plot -----
+plot.new()
+ymax <- 1
+ymin <- min(c(BIC_lower, NLL_lower)-0.005)
+K <- nrow(BIC_robustness)
+plot.window(xlim = c(1, K), ylim = c(ymin, ymax))
+
+axis(1, 1:K)
+axis(2, las = 2)
+grid()
+title(xlab = "Number of clusters", line = 2.5)
+title("Scaled BIC and NLL Across Clusters (±1 SD)", font.main = 1)
+
+# BIC
+points(1:K, BIC_mean, col = "#E41A1C", pch = 16, cex = 1.25)
+lines(1:K, BIC_mean, col = "#E41A1C", lwd = 1.5)
+polygon(
+  c(1:K, rev(1:K)),
+  c(BIC_lower, rev(BIC_higher)),
+  col = adjustcolor("#E41A1C", alpha.f = 0.2),
+  border = NA
+)
+
+# NLL
+points(1:K, NLL_mean, col = "#377EB8", pch = 15, cex = 1.25)
+lines(1:K, NLL_mean, col = "#377EB8", lwd = 1.5)
+polygon(
+  c(1:K, rev(1:K)),
+  c(NLL_lower, rev(NLL_higher)),
+  col = adjustcolor("#377EB8", alpha.f = 0.2),
+  border = NA
+)
+
+legend("topright",
+       legend = c("BIC", "NLL"),
+       col = c("#E41A1C", "#377EB8"),
+       pch = c(16, 15),
+       lwd = 2,
+       bty = "n"
+)
+
 
 
 

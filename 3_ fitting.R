@@ -249,7 +249,15 @@ classproportions1_long <- classproportions1 %>%
 # plot
 ggplot(classproportions1_long, aes(x = Cluster, y = Proportion, fill = Class)) +
   geom_bar(stat = "identity", position = "fill") +
-  labs(title = "Seed 1",
+  geom_text(
+    aes(label = ifelse(is.na(Proportion), "", sprintf("%.2f", Proportion))),
+    position = position_stack(vjust = 1), # slightly above each section
+    hjust = 0.5,   # left align
+    vjust = 1.7,   # top align
+    color = "black",
+    size = 5
+  ) +
+  labs(title = "Distribution of participants across models",
        y = "Proportion of person per cluster",
        x = "",
        fill = "Clusters") +
@@ -263,7 +271,7 @@ ggplot(classproportions1_long, aes(x = Cluster, y = Proportion, fill = Class)) +
         axis.title.y = element_text(margin = margin(r = 10), size = 12, colour = "black"),
         axis.text = element_text(size = 10, colour = "black"),
         plot.title = element_text(margin = margin(r = 10), size = 14, colour = "black", hjust = 0.5),
-        plot.margin = unit(c(1, 0.5, 0, 0.5), "cm")
+        plot.margin = unit(c(0.5, 0.5, 0, 0.5), "cm")
   )
 
 
