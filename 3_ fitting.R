@@ -890,3 +890,22 @@ skew(four_c2[6:12])
 skew(four_c3[6:12])
 skew(four_c4[6:12])
 
+
+
+
+######################################################################
+#                16. COMPARE CESD AND CLASSIFICATION                 #
+######################################################################
+
+above16 <- cesd$PpID[cesd$original >= 16]
+cluster3 <- external4[external4$Cluster == 3,]
+
+length(above16)
+length(cluster3$PID)
+
+common_ill <- intersect(above16, cluster3$PID)
+length(common_ill)/36
+
+
+sort(cluster3$CESD)
+sum(cluster3$CESD<16)

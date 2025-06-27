@@ -3995,7 +3995,6 @@ library(mnet)
 head(dataKoval13)
 dataKoval13 <- dataKoval13
 
-sum(cesd$CESD_original >= 16)
+above16 <- cesd$PpID[cesd$original >= 16]
 
-cesd$CESD_original <- cesd$CESD * 20
 
