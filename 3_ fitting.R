@@ -557,7 +557,18 @@ print(xtable(cross_mat,
       caption.placement = "top",
       hline.after = c(-1,0,nrow(cross_mat)))
 
-
+print(
+  xtable(
+    cross_matrices[["4vs5"]],
+    caption = "Cross-classification matrix of cluster assignments between the 4-cluster and 5-cluster models.",
+    label = "tab:crossmat_4_5",
+    align = c("l", rep("c", ncol(cross_matrices[["4vs5"]])))
+  ),
+  include.rownames = TRUE,
+  include.colnames = TRUE,
+  caption.placement = "top",
+  hline.after = c(-1, 0, nrow(cross_matrices[["4vs5"]]))
+)
 
 
 
@@ -909,3 +920,23 @@ length(common_ill)/36
 
 sort(cluster3$CESD)
 sum(cluster3$CESD<16)
+
+
+
+## above and below 16 classification
+depndep <- left_join(class4, cesd, by = c("id" = "PpID")) %>%
+  select(id, classification, original)
+
+group_low <- depndep %>% filter(original <= 16)
+group_high <- depndep %>% filter(original > 16)
+
+table(group_low$classification)
+table(group_high$classification)
+
+
+group_low27 <- depndep %>% filter(original <= 27)
+group_high27 <- depndep %>% filter(original > 27)
+
+table(group_low27$classification)
+table(group_high27$classification)
+

@@ -681,23 +681,25 @@ dev.off()
 
 
 
-#############################################################################
-#                9. CLUSTER 2 CONTEMPORANEOUS INTERPRETATION                #
-#############################################################################
+#####################################################################
+#                9. CLUSTER 4 PARTIAL INTERPRETATION                #
+#####################################################################
 cont4 <- contemporaneous1[[4]]
 cont4[,,1]
 
-c12 <- cont4[,,1] - cont4[,,2]
-c32 <- cont4[,,3] - cont4[,,2]
 
-layout(matrix(1:2, ncol=2))
-PlotHEAT(c12, main = "Cluster 1 - 2", labels = variables, small_difference_to_white = T)
-PlotHEAT(c32, main = "Cluster 3 - 2", labels = variables, small_difference_to_white = T)
+c41 <- cont4[,,4] - cont4[,,1]
+c42 <- cont4[,,4] - cont4[,,2]
+c43 <- cont4[,,4] - cont4[,,3]
 
 
-layout(matrix(1:2, ncol=2))
-PlotHEAT(c12, main = "Cluster 1 - 2", labels = variables, pcor = T)
-PlotHEAT(c32, main = "Cluster 3 - 2", labels = variables, pcor = T)
+
+layout(matrix(1:4, ncol=4))
+PlotHEAT(cont4[,,4], main = "Cluster 4", labels = variables, pcor = T, small_difference_to_white = TRUE)
+PlotHEAT(c41, main = "Cluster 4 - 1", labels = variables, pcor = T, small_difference_to_white = TRUE)
+PlotHEAT(c42, main = "Cluster 4 - 2", labels = variables, pcor = T, small_difference_to_white = TRUE)
+PlotHEAT(c43, main = "Cluster 4 - 3", labels = variables, pcor = T, small_difference_to_white = TRUE)
+
 
 
 
