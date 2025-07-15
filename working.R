@@ -4057,3 +4057,274 @@ for (k1 in 2:6) {
 cross_matrices["4vs5"]
 
 
+
+
+plotBV_flex(data=data_res_j,
+            IDcol = "ID",
+            ID = id4[j], # Subject number, here fixed
+            variable1 = "Happy_hat",
+            variable2 = "Happy", # Variable
+            lag=FALSE,
+            title=FALSE,
+            para=FALSE,
+            fit= FALSE,
+            diag = TRUE,
+            R2=TRUE)
+
+head(clas4)
+class(clas4)
+
+
+
+pdf("/Users/Lexi/Desktop/internship/4_ plots/repo_ res4.pdf", width=14, height=14)
+
+lmat <- matrix(1:16, 4, 4, byrow = TRUE)
+lo <- layout(lmat, widths = c(1,1,1,1), heights = c(1,1,1,1))
+
+variables <- c("Happy", "Relaxed", "Sad", "Angry", "Anxious", "Depressed", "Stressed")
+nClusters <- max(clas4) # Number of clusters
+ids_by_cluster <- lapply(1:nClusters, function(cl) as.numeric(rownames(clas4)[clas4[, 1] == cl]))
+
+
+for (var in variables) {
+  for (cl in 1:nClusters) {
+    ids <- ids_by_cluster[[cl]]
+    for (id_val in ids) {
+      idx <- which(id == as.numeric(id_val))
+      data_res_j <- pred4$Predictions[[idx]]
+      plotBV_flex(
+        data = data_res_j,
+        IDcol = "ID",
+        ID = as.numeric(id_val),
+        variable1 = paste0(var, "_hat"),
+        variable2 = var,
+        lag = FALSE,
+        title = TRUE,
+        para = FALSE,
+        fit = FALSE,
+        diag = TRUE,
+        R2 = TRUE
+      )
+    }
+  }
+}
+
+dev.off()
+
+
+
+RColorBrewer::brewer.pal(4, "Set2")
+
+
+
+
+# ...existing code...
+
+# Add a 'point_col' argument to plotBV_flex
+plotBV_flex <- function(data,
+                        IDcol,
+                        ID,
+                        variable1,
+                        variable2,
+                        lag = FALSE,
+                        title = TRUE,
+                        fit = TRUE,
+                        para = FALSE,
+                        diag = FALSE,
+                        xlim = NULL,
+                        R2=FALSE,
+                        point_col = "black") {  # <-- new argument
+  
+  # Subset data
+  data_ss <- data[data[[IDcol]] == ID, ]
+  Nt_ss <- nrow(data_ss)
+  if(is.null(xlim)) xlim <- c(1, Nt_ss)
+  
+  # Canvas
+  par(mar=c(4,4,2,1))
+  plot.new()
+  plot.window(xlim=c(0, 100), ylim=c(0, 100))
+  axis(1)
+  axis(2, las=2)
+  grid()
+  if(diag) abline(0, 1, col="grey")
+  if(lag) {
+    title(xlab = bquote(.(variable1)[t-1]),
+          ylab = bquote(.(variable2)[t]),
+          line = 2.5)
+  } else {
+    title(xlab=variable1, ylab=variable2, line=2.5)
+  }
+  if(title) title(main=paste0("Person ", ID), font.main=1)
+  
+  # Plot Data
+  if(lag) {
+    x1 <- data_ss[-Nt_ss, variable1]
+    x2 <- data_ss[-1, variable2]
+  } else {
+    x1 <- data_ss[, variable1]
+    x2 <- data_ss[, variable2]
+  }
+  points(x1, x2, pch=20, cex=1, col=point_col)  # <-- use color
+  lm_obj <- lm(x2 ~ x1)
+  if(fit) abline(lm_obj, lwd=2, col=point_col)  # <-- use color
+  
+  # Add regression results
+  if(para) text(80, 7, paste0("a = ",
+                              round(coef(lm_obj)[1], 2),
+                              ", b = ",
+                              round(coef(lm_obj)[2], 2)),
+                col=point_col)
+  
+  # ADD R2
+  if(R2) {
+    r2 <- cor(x1, x2, use="complete.obs")^2
+    r2 <- round(r2, 2)
+    text(20, 80, bquote(R^2 == .(r2)))
+  }
+  
+} # eoF
+
+# ...existing code...
+pdf("/Users/Lexi/Desktop/internship/4_ plots/repo_ res4.pdf", width=14, height=14)
+
+lmat <- matrix(1:16, 4, 4, byrow = TRUE)
+lo <- layout(lmat, widths = c(1,1,1,1), heights = c(1,1,1,1))
+
+variables <- c("Happy", "Relaxed", "Sad", "Angry", "Anxious", "Depressed", "Stressed")
+nClusters <- max(clas4) # Number of clusters
+ids_by_cluster <- lapply(1:nClusters, function(cl) as.numeric(rownames(clas4)[clas4[, 1] == cl]))
+
+cluster_cols <- RColorBrewer::brewer.pal(nClusters, "Set2")  # Get colors
+
+for (var in variables) {
+  for (cl in 1:nClusters) {
+    ids <- ids_by_cluster[[cl]]
+    for (id_val in ids) {
+      idx <- which(id == as.numeric(id_val))
+      data_res_j <- pred4$Predictions[[idx]]
+      plotBV_flex(
+        data = data_res_j,
+        IDcol = "ID",
+        ID = as.numeric(id_val),
+        variable1 = paste0(var, "_hat"),
+        variable2 = var,
+        lag = FALSE,
+        title = FALSE,
+        para = FALSE,
+        fit = FALSE,
+        diag = TRUE,
+        R2 = TRUE,
+        point_col = cluster_cols[cl]  # Pass color for cluster
+      )
+    }
+  }
+}
+
+dev.off()
+
+
+
+
+
+## add new before each variables
+
+pdf("/Users/Lexi/Desktop/internship/4_ plots/repo_ res4.pdf", width=14, height=14)
+
+variables <- c("Happy", "Relaxed", "Sad", "Angry", "Anxious", "Depressed", "Stressed")
+nClusters <- max(clas4) # Number of clusters
+ids_by_cluster <- lapply(1:nClusters, function(cl) as.numeric(rownames(clas4)[clas4[, 1] == cl]))
+
+for (var in variables) {
+  lmat <- matrix(1:16, 4, 4, byrow = TRUE)
+  layout(lmat, widths = c(1,1,1,1), heights = c(1,1,1,1))
+  for (cl in 1:nClusters) {
+    ids <- ids_by_cluster[[cl]]
+    for (id_val in ids) {
+      idx <- which(id == as.numeric(id_val))
+      data_res_j <- pred4$Predictions[[idx]]
+      plotBV_flex(
+        data = data_res_j,
+        IDcol = "ID",
+        ID = as.numeric(id_val),
+        variable1 = paste0(var, "_hat"),
+        variable2 = var,
+        lag = FALSE,
+        title = TRUE,
+        para = FALSE,
+        fit = FALSE,
+        diag = TRUE,
+        R2 = TRUE,
+        point_col = cluster_cols[cl]  # color by cluster
+      )
+    }
+  }
+}
+
+dev.off()
+
+pdf("/Users/Lexi/Desktop/internship/4_ plots/repo_ res4.pdf", width = 14, height = 14)
+
+variables <- c("Happy", "Relaxed", "Sad", "Angry", "Anxious", "Depressed", "Stressed")
+nClusters <- max(clas4)
+ids_by_cluster <- lapply(1:nClusters, function(cl) as.numeric(rownames(clas4)[clas4[, 1] == cl]))
+cluster_cols <- RColorBrewer::brewer.pal(nClusters, "Set2")
+
+# Helper function to plot a page of BV plots
+plot_one_page <- function(ids, cols, var, show_label = FALSE) {
+  layout(matrix(1:25, 5, 5, byrow = TRUE))
+  
+  if (show_label) {
+    plot.new()
+    text(0.5, 0.5, var, cex = 2, font = 2)
+  }
+  
+  for (i in seq_along(ids)) {
+    idx <- which(id == ids[i])
+    data_res_j <- pred4$Predictions[[idx]]
+    plotBV_flex(
+      data = data_res_j,
+      IDcol = "ID",
+      ID = ids[i],
+      variable1 = paste0(var, "_hat"),
+      variable2 = var,
+      lag = FALSE,
+      title = TRUE,
+      para = FALSE,
+      fit = FALSE,
+      diag = TRUE,
+      R2 = TRUE,
+      point_col = cols[i]
+    )
+  }
+  
+  # Fill remaining plots with empty panels
+  n_filled <- length(ids) + as.integer(show_label)
+  for (j in seq_len(25 - n_filled)) {
+    plot.new()
+  }
+}
+
+# Loop through each variable and generate plots
+for (var in variables) {
+  all_ids <- unlist(ids_by_cluster)
+  all_cols <- rep(cluster_cols, times = sapply(ids_by_cluster, length))
+  n_ids <- length(all_ids)
+  
+  # Page 1: label + up to 24 plots
+  if (n_ids > 0) {
+    plot_one_page(all_ids[1:min(24, n_ids)], all_cols[1:min(24, n_ids)], var, show_label = TRUE)
+  }
+  
+  # Additional pages: 25 plots each
+  if (n_ids > 24) {
+    remaining_ids <- all_ids[-(1:24)]
+    remaining_cols <- all_cols[-(1:24)]
+    pages <- split(seq_along(remaining_ids), ceiling(seq_along(remaining_ids) / 25))
+    for (pg in pages) {
+      plot_one_page(remaining_ids[pg], remaining_cols[pg], var, show_label = FALSE)
+    }
+  }
+}
+
+dev.off()

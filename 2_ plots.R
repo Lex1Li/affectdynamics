@@ -765,3 +765,78 @@ p4 <- PlotCOLLAPSED(
 
 grid.arrange(p1, p2, p3, p4, ncol = 4)
 
+
+
+
+
+
+
+######################################################################
+#                11. ACTUAL AGAINST PREDICTED FOR ALL                #
+######################################################################
+
+pdf("/Users/Lexi/Desktop/internship/4_ plots/repo_ res4.pdf", width = 14, height = 14)
+
+variables <- c("Happy", "Relaxed", "Sad", "Angry", "Anxious", "Depressed", "Stressed")
+nClusters <- max(clas4)
+ids_by_cluster <- lapply(1:nClusters, function(cl) as.numeric(rownames(clas4)[clas4[, 1] == cl]))
+cluster_cols <- RColorBrewer::brewer.pal(nClusters, "Set2")
+
+# Helper function to plot a page of BV plots
+plot_one_page <- function(ids, cols, var, show_label = FALSE) {
+  layout(matrix(1:25, 5, 5, byrow = TRUE))
+  
+  if (show_label) {
+    plot.new()
+    text(0.5, 0.5, var, cex = 2, font = 2)
+  }
+  
+  for (i in seq_along(ids)) {
+    idx <- which(id == ids[i])
+    data_res_j <- pred4$Predictions[[idx]]
+    plotBV_flex(
+      data = data_res_j,
+      IDcol = "ID",
+      ID = ids[i],
+      variable1 = paste0(var, "_hat"),
+      variable2 = var,
+      lag = FALSE,
+      title = TRUE,
+      para = FALSE,
+      fit = FALSE,
+      diag = TRUE,
+      R2 = TRUE,
+      point_col = cols[i]
+    )
+  }
+  
+  # Fill remaining plots with empty panels
+  n_filled <- length(ids) + as.integer(show_label)
+  for (j in seq_len(25 - n_filled)) {
+    plot.new()
+  }
+}
+
+# Loop through each variable and generate plots
+for (var in variables) {
+  all_ids <- unlist(ids_by_cluster)
+  all_cols <- rep(cluster_cols, times = sapply(ids_by_cluster, length))
+  n_ids <- length(all_ids)
+  
+  # Page 1: label + up to 24 plots
+  if (n_ids > 0) {
+    plot_one_page(all_ids[1:min(24, n_ids)], all_cols[1:min(24, n_ids)], var, show_label = TRUE)
+  }
+  
+  # Additional pages: 25 plots each
+  if (n_ids > 24) {
+    remaining_ids <- all_ids[-(1:24)]
+    remaining_cols <- all_cols[-(1:24)]
+    pages <- split(seq_along(remaining_ids), ceiling(seq_along(remaining_ids) / 25))
+    for (pg in pages) {
+      plot_one_page(remaining_ids[pg], remaining_cols[pg], var, show_label = FALSE)
+    }
+  }
+}
+
+dev.off()

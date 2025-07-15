@@ -146,7 +146,8 @@ plotBV_flex <- function(data,
                         para = FALSE,
                         diag = FALSE,
                         xlim = NULL,
-                        R2=FALSE) {
+                        R2=FALSE,
+                        point_col = "black") {  # <-- new argument
   
   # Subset data
   data_ss <- data[data[[IDcol]] == ID, ]
@@ -178,36 +179,25 @@ plotBV_flex <- function(data,
     x1 <- data_ss[, variable1]
     x2 <- data_ss[, variable2]
   }
-  points(x1, x2, pch=20, cex=1)
-  # lm_obj <- lm(x2 ~ x1)
-  # if(fit) abline(lm_obj, lwd=2, col="red")
-  
-  # Only fit and draw the line if there are enough valid values
-  if (sum(complete.cases(x1, x2)) > 1) {
-    lm_obj <- lm(x2 ~ x1)
-    
-    if (all(is.finite(coef(lm_obj)))) {
-      if (fit) abline(lm_obj, lwd = 2, col = "red")
-    }
-  }
+  points(x1, x2, pch=20, cex=1, col=point_col)  # <-- use color
+  lm_obj <- lm(x2 ~ x1)
+  if(fit) abline(lm_obj, lwd=2, col=point_col)  # <-- use color
   
   # Add regression results
   if(para) text(80, 7, paste0("a = ",
                               round(coef(lm_obj)[1], 2),
                               ", b = ",
                               round(coef(lm_obj)[2], 2)),
-                col="red")
+                col=point_col)
   
   # ADD R2
   if(R2) {
     r2 <- cor(x1, x2, use="complete.obs")^2
     r2 <- round(r2, 2)
     text(20, 80, bquote(R^2 == .(r2)))
-    
   }
   
 } # eoF
-
 
 
 #############################################
