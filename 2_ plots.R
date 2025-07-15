@@ -910,3 +910,74 @@ dev.off()
 
 
 
+
+# --------- plotted together --------- #
+pdf("/Users/Lexi/Desktop/internship/4_ plots/repo_ combined.pdf", width = 14, height = 14)
+
+variables <- c("Happy", "Relaxed", "Sad", "Angry", "Anxious", "Depressed", "Stressed")
+nClusters <- max(clas4)
+ids_by_cluster <- lapply(1:nClusters, function(cl) as.numeric(rownames(clas4)[clas4[, 1] == cl]))
+cluster_cols <- RColorBrewer::brewer.pal(nClusters, "Set2")
+
+plot_one_page_combined <- function(ids, var) {
+  layout(matrix(1:30, 5, 6, byrow = TRUE), widths = c(1, 0.3, 1, 1, 0.3, 1))
+  
+  for (i in seq_along(ids)) {
+    idx <- which(id == ids[i])
+    data_res_j <- pred4$Predictions[[idx]]
+    cluster_i <- clas4[as.character(ids[i]), 1]
+    pred_col <- cluster_cols[cluster_i]
+    
+    # 1. TS + marginal (PlotTS_Flex does both)
+    PlotTS_Flex(
+      data = data_res_j,
+      IDcol = "ID",
+      ID = ids[i],
+      variable = var,
+      variable2 = paste0(var, "_hat"),
+      layout = FALSE,
+      title = TRUE,
+      ylab = TRUE,
+      xlim = c(1, nrow(data_res_j)),
+      trend = FALSE,
+      resLegend = TRUE,
+      col_pred = pred_col
+    )
+    
+    # 2. BV plot
+    plotBV_flex(
+      data = data_res_j,
+      IDcol = "ID",
+      ID = ids[i],
+      variable1 = paste0(var, "_hat"),
+      variable2 = var,
+      lag = FALSE,
+      title = TRUE,
+      para = FALSE,
+      fit = FALSE,
+      diag = TRUE,
+      R2 = TRUE,
+      point_col = pred_col
+    )
+  }
+  
+  # Fill remaining panels if less than 10 participants (30 panels)
+  n_filled <- length(ids) * 3
+  for (j in seq_len(30 - n_filled)) {
+    plot.new()
+  }
+}
+
+for (var in variables) {
+  all_ids <- unlist(ids_by_cluster)
+  n_ids <- length(all_ids)
+  
+  # Each page: up to 10 participants (10*3=30 panels)
+  ids_per_page <- 10
+  pages <- split(all_ids, ceiling(seq_along(all_ids) / ids_per_page))
+  for (pg in pages) {
+    plot_one_page_combined(pg, var)
+  }
+}
+
+dev.off()

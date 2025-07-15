@@ -168,7 +168,7 @@ plotBV_flex <- function(data,
   } else {
     title(xlab=variable1, ylab=variable2, line=2.5)
   }
-  if(title) title(main=paste0("Person ", ID), font.main=1)
+  if(title) title(main=paste0("ID ", ID), font.main=1)
   
   # Plot Data
   if(lag) {
