@@ -20,7 +20,8 @@ PlotTS_Flex <- function(data,
                         ylab = FALSE,
                         xlim = NULL,
                         trend = TRUE,
-                        resLegend = FALSE) {
+                        resLegend = FALSE,
+                        col_pred = "orange") {  
   
   # Subset data
   data_ss <- data[data[[IDcol]] == ID, ] # get data of specified participant
@@ -41,10 +42,9 @@ PlotTS_Flex <- function(data,
   grid()
   # Plot Data
   lines(data_ss[, variable])
-  # abline(h=c(0,100))
   
-  # Second variable (I will use that for predictions later)
-  if(!is.null(variable2)) lines(data_ss[, variable2], col="orange")
+  # Second variable (predictions)
+  if(!is.null(variable2)) lines(data_ss[, variable2], col=col_pred)
   
   if(trend) {
     time <- 1:nrow(data_ss)
@@ -52,13 +52,12 @@ PlotTS_Flex <- function(data,
     abline(lm_obj, lwd=1, col="black", lty=2)
   }
   
-  if(resLegend) legend("topright", legend=c("Data", "Predictions"), bty="n", text.col=c("black", "orange"))
+  if(resLegend) legend("topright", legend=c("Data", "Predictions"), bty="n", text.col=c("black", col_pred))
   
   if(!is.null(title)) {
     if(title==TRUE) title(main=paste0(variable), font.main=1)
     if(class(title) == "character") title(title, , font.main=1)
   }
-  
   
   # Marginal
   par(mar=c(4,0,2,2))
@@ -72,9 +71,9 @@ PlotTS_Flex <- function(data,
                      mean = mean(data_ss[, variable], na.rm = TRUE),
                      sd = sd(data_ss[, variable], na.rm = TRUE))
   scaled_den <- (gauss_den/max(gauss_den) ) * max(hist_data$counts)
-  lines(scaled_den, seq(0, 24, length=1000), col="black") # Not entiresure where those 22 come from
-  
-} # eoF
+  lines(scaled_den, seq(0, 24, length=1000), col="black")
+}
+
 
 
 

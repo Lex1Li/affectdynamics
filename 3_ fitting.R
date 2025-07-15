@@ -637,140 +637,139 @@ round(cor5, 2)
 ################################################################################
 #                15. R^2 FOR TWO THREE AND FOUR CLUSTER MODELS                 #
 ################################################################################
-
-#### TWO CLUSTER MODEL #### 
-# -------- Compute Predictions --------
-pred2 <- LCVARPred(object = out_seed1,
-                   data = data,
-                   k = 2)
-
-# ---------- Compute R2 for each person and variable ----------
-c2_R2s <- lapply(pred2$Predictions, function(x) {
-  R2s <- c(cor(x$Happy_hat, x$Happy, use="complete.obs")^2,
-           cor(x$Relaxed_hat, x$Relaxed, use="complete.obs")^2,
-           cor(x$Sad_hat, x$Sad, use="complete.obs")^2,
-           cor(x$Angry_hat, x$Angry, use="complete.obs")^2,
-           cor(x$Anxious_hat, x$Anxious, use="complete.obs")^2,
-           cor(x$Depressed_hat, x$Depressed, use="complete.obs")^2,
-           cor(x$Stressed_hat, x$Stressed, use="complete.obs")^2)
-  return(R2s)
-})
-
-m2_R2s <- do.call(rbind, c2_R2s)
-colnames(m2_R2s) <- variables
-
-# Plotting
-df2_R2 <- data.frame(values = as.vector(m2_R2s),
-                     Variables = rep(colnames(m2_R2s), each = nrow(m2_R2s)),
-                     Clusters = rep(pred2$Classification, times = ncol(m2_R2s)))
-
-# For plotting replace Variables with integers, to avoid sorting issue
-df2_plot <- df2_R2
-df2_plot$Variables[df2_plot$Variables=="Happy"] <- 1
-df2_plot$Variables[df2_plot$Variables=="Relaxed"] <- 2
-df2_plot$Variables[df2_plot$Variables=="Sad"] <- 3
-df2_plot$Variables[df2_plot$Variables=="Angry"] <- 4
-df2_plot$Variables[df2_plot$Variables=="Anxious"] <- 5
-df2_plot$Variables[df2_plot$Variables=="Depressed"] <- 6
-df2_plot$Variables[df2_plot$Variables=="Stressed"] <- 7
-
-# plot
-pdf("/Users/Lexi/Desktop/internship/4_ plots/19a_ r2 two clusters.pdf", width=7, height=5)
-cols_k2 <- RColorBrewer::brewer.pal(2, "Set2")
-
-boxplot(values ~ Variables + Clusters,  # Specify groups and subgroups
-        data = df2_plot, las=2, axes=FALSE, xlab="", ylab="", col=rep(cols_k2, each=7), ylim=c(0, .8))
-grid()
-boxplot(values ~ Variables + Clusters,  # Specify groups and subgroups
-        data = df2_plot, las=2, axes=FALSE, xlab="", ylab="", col=rep(cols_k2, each=7), ylim=c(0, .8), add = TRUE)
-
-# axis and title
-axis(1, 1:14, rep(variables, times=2), las=2)
-axis(2, las=2)
-title(ylab="Proportion of Explained Variance")
-title("Two Cluster Model")
-
-# add cluster names
-nClusters <- 2  
-nVars <- 7      
-mp <- seq(1, nClusters * nVars, length.out = nClusters + 1)
-mps <- (mp[-1] + mp[-length(mp)]) / 2  # centers of each cluster group
-for(k in 1:nClusters) {
-  text(mps[k], 0.8, paste0("Cluster ", k), col=cols_k2[k])
-}
-
-dev.off()
-
-
-
-#### THREE CLUSTER MODEL #### 
-# -------- Compute Predictions --------
-pred3 <- LCVARPred(object = out_seed1,
-                   data = data,
-                   k = 3)
-
-# ---------- Compute R2 for each person and variable ----------
-
-c3_R2s <- lapply(pred3$Predictions, function(x) {
-  R2s <- c(cor(x$Happy_hat, x$Happy, use="complete.obs")^2,
-           cor(x$Relaxed_hat, x$Relaxed, use="complete.obs")^2,
-           cor(x$Sad_hat, x$Sad, use="complete.obs")^2,
-           cor(x$Angry_hat, x$Angry, use="complete.obs")^2,
-           cor(x$Anxious_hat, x$Anxious, use="complete.obs")^2,
-           cor(x$Depressed_hat, x$Depressed, use="complete.obs")^2,
-           cor(x$Stressed_hat, x$Stressed, use="complete.obs")^2)
-  
-  return(R2s)
-})
-
-
-m3_R2s <- do.call(rbind, c3_R2s)
-colnames(m3_R2s) <- variables
-
-# Plotting
-df3_R2 <- data.frame(values = as.vector(m3_R2s),
-                     Variables = rep(colnames(m3_R2s), each = nrow(m3_R2s)),
-                     Clusters = rep(pred3$Classification, times = ncol(m3_R2s)))
-
-# mean(df3_R2[df3_R2$Clusters==3 & df3_R2$Variables=="Happy",]$values)
-
-# For plotting replace Variables with integers, to avoid sorting issue
-df3_plot <- df3_R2
-df3_plot$Variables[df3_plot$Variables=="Happy"] <- 1
-df3_plot$Variables[df3_plot$Variables=="Relaxed"] <- 2
-df3_plot$Variables[df3_plot$Variables=="Sad"] <- 3
-df3_plot$Variables[df3_plot$Variables=="Angry"] <- 4
-df3_plot$Variables[df3_plot$Variables=="Anxious"] <- 5
-df3_plot$Variables[df3_plot$Variables=="Depressed"] <- 6
-df3_plot$Variables[df3_plot$Variables=="Stressed"] <- 7
-
-
-# plot
-pdf("/Users/Lexi/Desktop/internship/4_ plots/19b_ r2 three clusters.pdf", width=7, height=5)
-cols_k7 <- RColorBrewer::brewer.pal(7, "Set2")
-
-boxplot(values ~ Variables + Clusters,  # Specify groups and subgroups
-        data = df3_plot, las=2, axes=FALSE, xlab="", ylab="", col=rep(cols_k7, each=7), ylim=c(0, .8))
-grid()
-boxplot(values ~ Variables + Clusters,  # Specify groups and subgroups
-        data = df3_plot, las=2, axes=FALSE, xlab="", ylab="", col=rep(cols_k7, each=7), ylim=c(0, .8), add = TRUE)
-
-# axis and title
-axis(1, 1:21, rep(variables, times=3), las=2)
-axis(2, las=2)
-title(ylab="Proportion of Explained Variance")
-title("Three Cluster Model")
-
-# add cluster names
-nClusters <- 3  
-nVars <- 7      
-mp <- seq(1, nClusters * nVars, length.out = nClusters + 1)
-mps <- (mp[-1] + mp[-length(mp)]) / 2  # centers of each cluster group
-for(k in 1:nClusters) {
-  text(mps[k], 0.8, paste0("Cluster ", k), col=cols_k7[k])
-}
-
-dev.off()
+# #### TWO CLUSTER MODEL #### 
+# # -------- Compute Predictions --------
+# pred2 <- LCVARPred(object = out_seed1,
+#                    data = data,
+#                    k = 2)
+# 
+# # ---------- Compute R2 for each person and variable ----------
+# c2_R2s <- lapply(pred2$Predictions, function(x) {
+#   R2s <- c(cor(x$Happy_hat, x$Happy, use="complete.obs")^2,
+#            cor(x$Relaxed_hat, x$Relaxed, use="complete.obs")^2,
+#            cor(x$Sad_hat, x$Sad, use="complete.obs")^2,
+#            cor(x$Angry_hat, x$Angry, use="complete.obs")^2,
+#            cor(x$Anxious_hat, x$Anxious, use="complete.obs")^2,
+#            cor(x$Depressed_hat, x$Depressed, use="complete.obs")^2,
+#            cor(x$Stressed_hat, x$Stressed, use="complete.obs")^2)
+#   return(R2s)
+# })
+# 
+# m2_R2s <- do.call(rbind, c2_R2s)
+# colnames(m2_R2s) <- variables
+# 
+# # Plotting
+# df2_R2 <- data.frame(values = as.vector(m2_R2s),
+#                      Variables = rep(colnames(m2_R2s), each = nrow(m2_R2s)),
+#                      Clusters = rep(pred2$Classification, times = ncol(m2_R2s)))
+# 
+# # For plotting replace Variables with integers, to avoid sorting issue
+# df2_plot <- df2_R2
+# df2_plot$Variables[df2_plot$Variables=="Happy"] <- 1
+# df2_plot$Variables[df2_plot$Variables=="Relaxed"] <- 2
+# df2_plot$Variables[df2_plot$Variables=="Sad"] <- 3
+# df2_plot$Variables[df2_plot$Variables=="Angry"] <- 4
+# df2_plot$Variables[df2_plot$Variables=="Anxious"] <- 5
+# df2_plot$Variables[df2_plot$Variables=="Depressed"] <- 6
+# df2_plot$Variables[df2_plot$Variables=="Stressed"] <- 7
+# 
+# # plot
+# pdf("/Users/Lexi/Desktop/internship/4_ plots/19a_ r2 two clusters.pdf", width=7, height=5)
+# cols_k2 <- RColorBrewer::brewer.pal(2, "Set2")
+# 
+# boxplot(values ~ Variables + Clusters,  # Specify groups and subgroups
+#         data = df2_plot, las=2, axes=FALSE, xlab="", ylab="", col=rep(cols_k2, each=7), ylim=c(0, .8))
+# grid()
+# boxplot(values ~ Variables + Clusters,  # Specify groups and subgroups
+#         data = df2_plot, las=2, axes=FALSE, xlab="", ylab="", col=rep(cols_k2, each=7), ylim=c(0, .8), add = TRUE)
+# 
+# # axis and title
+# axis(1, 1:14, rep(variables, times=2), las=2)
+# axis(2, las=2)
+# title(ylab="Proportion of Explained Variance")
+# title("Two Cluster Model")
+# 
+# # add cluster names
+# nClusters <- 2  
+# nVars <- 7      
+# mp <- seq(1, nClusters * nVars, length.out = nClusters + 1)
+# mps <- (mp[-1] + mp[-length(mp)]) / 2  # centers of each cluster group
+# for(k in 1:nClusters) {
+#   text(mps[k], 0.8, paste0("Cluster ", k), col=cols_k2[k])
+# }
+# 
+# dev.off()
+# 
+# 
+# 
+# #### THREE CLUSTER MODEL #### 
+# # -------- Compute Predictions --------
+# pred3 <- LCVARPred(object = out_seed1,
+#                    data = data,
+#                    k = 3)
+# 
+# # ---------- Compute R2 for each person and variable ----------
+# 
+# c3_R2s <- lapply(pred3$Predictions, function(x) {
+#   R2s <- c(cor(x$Happy_hat, x$Happy, use="complete.obs")^2,
+#            cor(x$Relaxed_hat, x$Relaxed, use="complete.obs")^2,
+#            cor(x$Sad_hat, x$Sad, use="complete.obs")^2,
+#            cor(x$Angry_hat, x$Angry, use="complete.obs")^2,
+#            cor(x$Anxious_hat, x$Anxious, use="complete.obs")^2,
+#            cor(x$Depressed_hat, x$Depressed, use="complete.obs")^2,
+#            cor(x$Stressed_hat, x$Stressed, use="complete.obs")^2)
+#   
+#   return(R2s)
+# })
+# 
+# 
+# m3_R2s <- do.call(rbind, c3_R2s)
+# colnames(m3_R2s) <- variables
+# 
+# # Plotting
+# df3_R2 <- data.frame(values = as.vector(m3_R2s),
+#                      Variables = rep(colnames(m3_R2s), each = nrow(m3_R2s)),
+#                      Clusters = rep(pred3$Classification, times = ncol(m3_R2s)))
+# 
+# # mean(df3_R2[df3_R2$Clusters==3 & df3_R2$Variables=="Happy",]$values)
+# 
+# # For plotting replace Variables with integers, to avoid sorting issue
+# df3_plot <- df3_R2
+# df3_plot$Variables[df3_plot$Variables=="Happy"] <- 1
+# df3_plot$Variables[df3_plot$Variables=="Relaxed"] <- 2
+# df3_plot$Variables[df3_plot$Variables=="Sad"] <- 3
+# df3_plot$Variables[df3_plot$Variables=="Angry"] <- 4
+# df3_plot$Variables[df3_plot$Variables=="Anxious"] <- 5
+# df3_plot$Variables[df3_plot$Variables=="Depressed"] <- 6
+# df3_plot$Variables[df3_plot$Variables=="Stressed"] <- 7
+# 
+# 
+# # plot
+# pdf("/Users/Lexi/Desktop/internship/4_ plots/19b_ r2 three clusters.pdf", width=7, height=5)
+# cols_k7 <- RColorBrewer::brewer.pal(7, "Set2")
+# 
+# boxplot(values ~ Variables + Clusters,  # Specify groups and subgroups
+#         data = df3_plot, las=2, axes=FALSE, xlab="", ylab="", col=rep(cols_k7, each=7), ylim=c(0, .8))
+# grid()
+# boxplot(values ~ Variables + Clusters,  # Specify groups and subgroups
+#         data = df3_plot, las=2, axes=FALSE, xlab="", ylab="", col=rep(cols_k7, each=7), ylim=c(0, .8), add = TRUE)
+# 
+# # axis and title
+# axis(1, 1:21, rep(variables, times=3), las=2)
+# axis(2, las=2)
+# title(ylab="Proportion of Explained Variance")
+# title("Three Cluster Model")
+# 
+# # add cluster names
+# nClusters <- 3  
+# nVars <- 7      
+# mp <- seq(1, nClusters * nVars, length.out = nClusters + 1)
+# mps <- (mp[-1] + mp[-length(mp)]) / 2  # centers of each cluster group
+# for(k in 1:nClusters) {
+#   text(mps[k], 0.8, paste0("Cluster ", k), col=cols_k7[k])
+# }
+# 
+# dev.off()
 
 
 
@@ -813,7 +812,7 @@ df4_plot$Variables[df4_plot$Variables=="Depressed"] <- 6
 df4_plot$Variables[df4_plot$Variables=="Stressed"] <- 7
 
 
-# plot
+# -------- Plot --------
 pdf("/Users/Lexi/Desktop/internship/4_ plots/19c_ r2 four clusters.pdf", width=10, height=5)
 cols_k7 <- RColorBrewer::brewer.pal(7, "Set2")
 
@@ -839,6 +838,60 @@ for(k in 1:nClusters) {
 }
 
 dev.off()
+
+
+
+
+# -------- Variables Together --------
+cols_k4 <- RColorBrewer::brewer.pal(4, "Set2")
+nClusters <- 4
+nVars <- length(variables)
+
+# Calculate positions for boxes with gaps
+gap <- 0.7  # gap size between variable groups
+box_positions <- unlist(lapply(0:(nVars-1), function(i) i*(nClusters+gap) + 1:nClusters))
+
+# Plot boxplots with manual positions
+boxplot(values ~ Clusters + Variables,
+        data = df4_plot, las=2, axes=FALSE, xlab="", ylab="",
+        col=rep(cols_k4, times=nVars),
+        ylim=c(0, .8),
+        at=box_positions)
+grid()
+boxplot(values ~ Clusters + Variables,
+        data = df4_plot, las=2, axes=FALSE, xlab="", ylab="",
+        col=rep(cols_k4, times=nVars),
+        ylim=c(0, .8),
+        add=TRUE,
+        at=box_positions)
+
+# Set axis labels: one per variable, centered
+var_centers <- sapply(0:(nVars-1), function(i) mean(box_positions[(i*nClusters+1):((i+1)*nClusters)]))
+axis(1, at=var_centers, labels=variables, las=2)
+axis(2, las=2)
+title(ylab="Proportion of Explained Variance")
+title("Four Cluster Model")
+
+legend(x = max(box_positions) - 3,  # push far right
+       y = 1.05,                     # top of y-axis
+       legend = paste("Cluster", 1:nClusters),
+       fill = cols_k4,
+       horiz = FALSE,               # vertical stack (better for far-right)
+       cex = 0.9,
+       xpd = TRUE,
+       bty = "n")
+
+
+
+#### MEDIAN FOR EACH MODEL #### 
+median(df2_plot$values, na.rm = TRUE)
+median(df3_plot$values, na.rm = TRUE)
+median(df4_plot$values, na.rm = TRUE)
+
+
+max(df2_plot$values, na.rm = T)
+max(df3_plot$values, na.rm = T)
+max(df4_plot$values, na.rm = T)
 
 
 

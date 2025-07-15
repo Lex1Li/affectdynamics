@@ -4328,3 +4328,345 @@ for (var in variables) {
 }
 
 dev.off()
+
+
+
+
+
+cols_k4 <- RColorBrewer::brewer.pal(4, "Set2")
+
+boxplot(values ~ Clusters + Variables,  # Group by variables, then clusters
+        data = df4_plot, las=2, axes=FALSE, xlab="", ylab="", col=rep(cols_k4, times=4), ylim=c(0, .8))
+grid()
+boxplot(values ~ Clusters + Variables,  # Group by variables, then clusters
+        data = df4_plot, las=2, axes=FALSE, xlab="", ylab="", col=rep(cols_k4, times=4), ylim=c(0, .8), add = TRUE)
+
+axis(1, 1:28, rep(variables, each=4), las=2)
+axis(2, las=2)
+title(ylab="Proportion of Explained Variance")
+title("Four Cluster Model")
+
+
+rep(cols_k4, times=4)
+
+
+
+
+# ...existing code...
+
+cols_k4 <- RColorBrewer::brewer.pal(4, "Set2")
+nClusters <- 4
+nVars <- length(variables)
+
+# Calculate positions for boxes with gaps
+gap <- 0.7  # gap size between variable groups
+box_positions <- unlist(lapply(0:(nVars-1), function(i) i*(nClusters+gap) + 1:nClusters))
+
+# Plot boxplots with manual positions
+boxplot(values ~ Clusters + Variables,
+        data = df4_plot, las=2, axes=FALSE, xlab="", ylab="",
+        col=rep(cols_k4, times=nVars),
+        ylim=c(0, .8),
+        at=box_positions)
+grid()
+boxplot(values ~ Clusters + Variables,
+        data = df4_plot, las=2, axes=FALSE, xlab="", ylab="",
+        col=rep(cols_k4, times=nVars),
+        ylim=c(0, .8),
+        add=TRUE,
+        at=box_positions)
+
+# Set axis labels: one per variable, centered
+var_centers <- sapply(0:(nVars-1), function(i) mean(box_positions[(i*nClusters+1):((i+1)*nClusters)]))
+axis(1, at=var_centers, labels=variables, las=2)
+axis(2, las=2)
+title(ylab="Proportion of Explained Variance")
+title("Four Cluster Model")
+
+# ...existing code...
+
+
+
+library(dplyr)
+
+# Calculate median for each variable and cluster
+median_table <- df4_plot %>%
+  group_by(Variables, Clusters) %>%
+  summarise(median_value = median(values, na.rm = TRUE)) %>%
+  ungroup()
+
+max(median_table$median_value, na.rm = TRUE) 
+min(median_table$median_value, na.rm = TRUE)
+
+overall_median <- median(df4_plot$values, na.rm = TRUE)
+
+
+# -------- Variables Together: Two Cluster Model --------
+cols_k2 <- RColorBrewer::brewer.pal(2, "Set2")
+cols_k2 <- cols_k2[1:2]
+nClusters <- 2
+nVars <- length(variables)
+
+gap <- 0.7
+box_positions <- unlist(lapply(0:(nVars-1), function(i) i*(nClusters+gap) + 1:nClusters))
+
+boxplot(values ~ Clusters + Variables,
+        data = df2_plot, las=2, axes=FALSE, xlab="", ylab="",
+        col=rep(cols_k2, times=nVars),
+        ylim=c(0, .8),
+        at=box_positions)
+grid()
+boxplot(values ~ Clusters + Variables,
+        data = df2_plot, las=2, axes=FALSE, xlab="", ylab="",
+        col=rep(cols_k2, times=nVars),
+        ylim=c(0, .8),
+        add=TRUE,
+        at=box_positions)
+
+var_centers <- sapply(0:(nVars-1), function(i) mean(box_positions[(i*nClusters+1):((i+1)*nClusters)]))
+axis(1, at=var_centers, labels=variables, las=2)
+axis(2, las=2)
+title(ylab="Proportion of Explained Variance")
+title("Two Cluster Model")
+
+legend(x = max(box_positions) - 1.5,
+       y = 1.05,
+       legend = paste("Cluster", 1:nClusters),
+       fill = cols_k2,
+       horiz = FALSE,
+       cex = 0.9,
+       xpd = TRUE,
+       bty = "n")
+
+
+# -------- Variables Together: Three Cluster Model --------
+cols_k3 <- RColorBrewer::brewer.pal(3, "Set2")
+nClusters <- 3
+nVars <- length(variables)
+
+gap <- 0.7
+box_positions <- unlist(lapply(0:(nVars-1), function(i) i*(nClusters+gap) + 1:nClusters))
+
+boxplot(values ~ Clusters + Variables,
+        data = df3_plot, las=2, axes=FALSE, xlab="", ylab="",
+        col=rep(cols_k3, times=nVars),
+        ylim=c(0, .8),
+        at=box_positions)
+grid()
+boxplot(values ~ Clusters + Variables,
+        data = df3_plot, las=2, axes=FALSE, xlab="", ylab="",
+        col=rep(cols_k3, times=nVars),
+        ylim=c(0, .8),
+        add=TRUE,
+        at=box_positions)
+
+var_centers <- sapply(0:(nVars-1), function(i) mean(box_positions[(i*nClusters+1):((i+1)*nClusters)]))
+axis(1, at=var_centers, labels=variables, las=2)
+axis(2, las=2)
+title(ylab="Proportion of Explained Variance")
+title("Three Cluster Model")
+
+legend(x = max(box_positions) - 2,
+       y = 1.05,
+       legend = paste("Cluster", 1:nClusters),
+       fill = cols_k3,
+       horiz = FALSE,
+       cex = 0.9,
+       xpd = TRUE,
+       bty = "n")
+
+
+
+
+pdf("/Users/Lexi/Desktop/internship/4_ plots/repo_ ts4.pdf", width = 16, height = 14)
+
+variables <- c("Happy", "Relaxed", "Sad", "Angry", "Anxious", "Depressed", "Stressed")
+nClusters <- max(clas4)
+ids_by_cluster <- lapply(1:nClusters, function(cl) as.numeric(rownames(clas4)[clas4[, 1] == cl]))
+cluster_cols <- RColorBrewer::brewer.pal(nClusters, "Set2")
+
+plot_one_page_ts <- function(ids, cols, var, show_label = FALSE) {
+  layout(matrix(1:30, 5, 6, byrow = TRUE))
+  
+  if (show_label) {
+    plotLabel(var, cex = 2)
+  }
+  
+  for (i in seq_along(ids)) {
+    idx <- which(id == ids[i])
+    data_res_j <- pred4$Predictions[[idx]]
+    PlotTS_Flex(
+      data = data_res_j,
+      IDcol = "ID",
+      ID = ids[i],
+      variable = var,
+      variable2 = paste0(var, "_hat"),
+      layout = FALSE,
+      title = TRUE,
+      ylab = TRUE,
+      xlim = c(1, nrow(data_res_j)),
+      trend = FALSE,
+      resLegend = TRUE
+    )
+  }
+  
+  n_filled <- length(ids) + as.integer(show_label)
+  for (j in seq_len(25 - n_filled)) {
+    plot.new()
+  }
+}
+
+for (var in variables) {
+  all_ids <- unlist(ids_by_cluster)
+  all_cols <- rep(cluster_cols, times = sapply(ids_by_cluster, length))
+  n_ids <- length(all_ids)
+  
+  # Page 1: label + up to 24 plots
+  if (n_ids > 0) {
+    plot_one_page_ts(all_ids[1:min(24, n_ids)], all_cols[1:min(24, n_ids)], var, show_label = FALSE)
+  }
+  
+  # Additional pages: 25 plots each
+  if (n_ids > 24) {
+    remaining_ids <- all_ids[-(1:24)]
+    remaining_cols <- all_cols[-(1:24)]
+    pages <- split(seq_along(remaining_ids), ceiling(seq_along(remaining_ids) / 25))
+    for (pg in pages) {
+      plot_one_page_ts(remaining_ids[pg], remaining_cols[pg], var, show_label = FALSE)
+    }
+  }
+}
+
+dev.off()
+
+
+
+PlotTS_Flex <- function(data,
+                        IDcol, # column with subject ID
+                        ID, # subject ID
+                        variable, # variable colname
+                        variable2 = NULL,
+                        layout = FALSE,
+                        title = TRUE,
+                        xlab = FALSE,
+                        ylab = FALSE,
+                        xlim = NULL,
+                        trend = TRUE,
+                        resLegend = FALSE,
+                        col_pred = "orange") {  # <-- new argument
+  
+  # Subset data
+  data_ss <- data[data[[IDcol]] == ID, ] # get data of specified participant
+  Nt_ss <- nrow(data_ss)
+  if(is.null(xlim)) xlim <- c(1, Nt_ss) # set xlim if wasn't defined
+  
+  # Layout
+  if(layout) layout(matrix(1:2, ncol=2), widths = c(1, .35)) # 2 plots width 1 & .35
+  
+  # LinePlot
+  par(mar=c(4,4,2,1))
+  plot.new()
+  plot.window(xlim=xlim, ylim=c(0, 100))
+  if(ylab) title(ylab=variable, line=2.25)
+  if(xlab) title(xlab='Time', line=2.25)
+  axis(1)
+  axis(2, las=2)
+  grid()
+  # Plot Data
+  lines(data_ss[, variable])
+  
+  # Second variable (predictions)
+  if(!is.null(variable2)) lines(data_ss[, variable2], col=col_pred)
+  
+  if(trend) {
+    time <- 1:nrow(data_ss)
+    lm_obj <- lm(data_ss[, variable]~time)
+    abline(lm_obj, lwd=1, col="black", lty=2)
+  }
+  
+  if(resLegend) legend("topright", legend=c("Data", "Predictions"), bty="n", text.col=c("black", col_pred))
+  
+  if(!is.null(title)) {
+    if(title==TRUE) title(main=paste0(variable), font.main=1)
+    if(class(title) == "character") title(title, , font.main=1)
+  }
+  
+  # Marginal
+  par(mar=c(4,0,2,2))
+  hist_data <- hist(data_ss[, variable], plot = FALSE, breaks=seq(0, 100, length=20))
+  barplot(hist_data$counts,
+          horiz = TRUE,  # Horizontal bars
+          names.arg = NULL,
+          axes=FALSE)
+  x_seq <- seq(0, 100, length=1000)
+  gauss_den <- dnorm(x_seq,
+                     mean = mean(data_ss[, variable], na.rm = TRUE),
+                     sd = sd(data_ss[, variable], na.rm = TRUE))
+  scaled_den <- (gauss_den/max(gauss_den) ) * max(hist_data$counts)
+  lines(scaled_den, seq(0, 24, length=1000), col="black")
+}
+
+
+
+pdf("/Users/Lexi/Desktop/internship/4_ plots/repo_ ts4.pdf", width = 16, height = 14)
+
+variables <- c("Happy", "Relaxed", "Sad", "Angry", "Anxious", "Depressed", "Stressed")
+nClusters <- max(clas4)
+ids_by_cluster <- lapply(1:nClusters, function(cl) as.numeric(rownames(clas4)[clas4[, 1] == cl]))
+cluster_cols <- RColorBrewer::brewer.pal(nClusters, "Set2")
+
+plot_one_page_ts <- function(ids, var, show_label = FALSE) {
+  layout(matrix(1:30, 5, 6, byrow = TRUE))
+  
+  if (show_label) {
+    plotLabel(var, cex = 2)
+  }
+  
+  for (i in seq_along(ids)) {
+    idx <- which(id == ids[i])
+    data_res_j <- pred4$Predictions[[idx]]
+    # Find cluster for this ID
+    cluster_i <- clas4[as.character(ids[i]), 1]
+    pred_col <- cluster_cols[cluster_i]
+    PlotTS_Flex(
+      data = data_res_j,
+      IDcol = "ID",
+      ID = ids[i],
+      variable = var,
+      variable2 = paste0(var, "_hat"),
+      layout = FALSE,
+      title = TRUE,
+      ylab = TRUE,
+      xlim = c(1, nrow(data_res_j)),
+      trend = FALSE,
+      resLegend = TRUE,
+      col_pred = pred_col   # pass color for prediction line
+    )
+  }
+  
+  n_filled <- length(ids) + as.integer(show_label)
+  for (j in seq_len(30 - n_filled)) {  # fill up to 30 panels
+    plot.new()
+  }
+}
+
+for (var in variables) {
+  all_ids <- unlist(ids_by_cluster)
+  n_ids <- length(all_ids)
+  
+  # Page 1: label + up to 30 plots
+  if (n_ids > 0) {
+    plot_one_page_ts(all_ids[1:min(30, n_ids)], var, show_label = FALSE)
+  }
+  
+  # Additional pages: 30 plots each
+  if (n_ids > 30) {
+    remaining_ids <- all_ids[-(1:30)]
+    pages <- split(seq_along(remaining_ids), ceiling(seq_along(remaining_ids) / 30))
+    for (pg in pages) {
+      plot_one_page_ts(remaining_ids[pg], var, show_label = FALSE)
+    }
+  }
+}
+
+dev.off()

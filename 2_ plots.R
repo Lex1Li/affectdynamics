@@ -774,7 +774,73 @@ grid.arrange(p1, p2, p3, p4, ncol = 4)
 ######################################################################
 #                11. ACTUAL AGAINST PREDICTED FOR ALL                #
 ######################################################################
+# --------- time series --------- #
+pdf("/Users/Lexi/Desktop/internship/4_ plots/repo_ ts4.pdf", width = 16, height = 14)
 
+variables <- c("Happy", "Relaxed", "Sad", "Angry", "Anxious", "Depressed", "Stressed")
+nClusters <- max(clas4)
+ids_by_cluster <- lapply(1:nClusters, function(cl) as.numeric(rownames(clas4)[clas4[, 1] == cl]))
+cluster_cols <- RColorBrewer::brewer.pal(nClusters, "Set2")
+
+plot_one_page_ts <- function(ids, var, show_label = FALSE) {
+  layout(matrix(1:30, 5, 6, byrow = TRUE))
+  
+  if (show_label) {
+    plotLabel(var, cex = 2)
+  }
+  
+  for (i in seq_along(ids)) {
+    idx <- which(id == ids[i])
+    data_res_j <- pred4$Predictions[[idx]]
+    # Find cluster for this ID
+    cluster_i <- clas4[as.character(ids[i]), 1]
+    pred_col <- cluster_cols[cluster_i]
+    PlotTS_Flex(
+      data = data_res_j,
+      IDcol = "ID",
+      ID = ids[i],
+      variable = var,
+      variable2 = paste0(var, "_hat"),
+      layout = FALSE,
+      title = TRUE,
+      ylab = TRUE,
+      xlim = c(1, nrow(data_res_j)),
+      trend = FALSE,
+      resLegend = TRUE,
+      col_pred = pred_col   # pass color for prediction line
+    )
+  }
+  
+  n_filled <- length(ids) + as.integer(show_label)
+  for (j in seq_len(30 - n_filled)) {  # fill up to 30 panels
+    plot.new()
+  }
+}
+
+for (var in variables) {
+  all_ids <- unlist(ids_by_cluster)
+  n_ids <- length(all_ids)
+  
+  # Page 1: label + up to 30 plots
+  if (n_ids > 0) {
+    plot_one_page_ts(all_ids[1:min(30, n_ids)], var, show_label = FALSE)
+  }
+  
+  # Additional pages: 30 plots each
+  if (n_ids > 30) {
+    remaining_ids <- all_ids[-(1:30)]
+    pages <- split(seq_along(remaining_ids), ceiling(seq_along(remaining_ids) / 30))
+    for (pg in pages) {
+      plot_one_page_ts(remaining_ids[pg], var, show_label = FALSE)
+    }
+  }
+}
+
+dev.off()
+
+
+
+# --------- regression --------- #
 pdf("/Users/Lexi/Desktop/internship/4_ plots/repo_ res4.pdf", width = 14, height = 14)
 
 variables <- c("Happy", "Relaxed", "Sad", "Angry", "Anxious", "Depressed", "Stressed")
@@ -840,3 +906,7 @@ for (var in variables) {
 }
 
 dev.off()
+
+
+
+
