@@ -4828,4 +4828,3 @@ PlotTRENDS(out_seed1, 4, variables)
 PlotTRENDS(out_seed1, 5, variables)
 PlotTRENDS(out_seed1, 6, variables)
 
-clas4
