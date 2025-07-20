@@ -1,6 +1,7 @@
 # readme
 Code files and supplementary material for the Research Masters internship 
 
+## files
 datalexi: cleaned data (affect, cesd, data, overview, id, n)
 
 3outs: LCVAR output using the three random seeds, out_seed1 used for analysis
