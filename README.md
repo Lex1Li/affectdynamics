@@ -2,11 +2,11 @@
 Code files and supplementary material for the Research Masters internship 
 
 ## files
-datalexi: cleaned data (affect, cesd, data, overview, id, n)
+data/datalexi: cleaned data (affect, cesd, data, overview, id, n)
 
-3outs: LCVAR output using the three random seeds, out_seed1 used for analysis
+data/3outs: LCVAR output using the three random seeds, out_seed1 used for analysis
 
-repo_predicted: observed values plotted against predicted values, used for internship report
+plots/repo_predicted: observed values plotted against predicted values, used for internship report
 
 1_ data wrangling: data cleaning code
 
