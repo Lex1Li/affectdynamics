@@ -4744,3 +4744,88 @@ for (var in variables) {
 }
 
 dev.off()
+
+
+
+
+# ID 162 (Relaxed Cluster 2)
+# Stressed, ID 504, Cluster 3
+# Relaxed, ID 181, Cluster 3
+# Happy, ID 13, Cluster 4
+# Angry, ID 447, Cluster 2
+
+
+plotLabel("ID 162 (Relaxed Cluster 2)")
+plotLabel("ID 504 (Stressed Cluster 3)")
+plotLabel("ID 181 (Relaxed Cluster 3)")
+plotLabel("ID 13 (Happy Cluster 4)")
+plotLabel("ID 447 (Angry Cluster 2)")
+
+
+pdf("/Users/Lexi/Desktop/internship/4_ plots/o_pred_examples.pdf", width=8, height = 10)
+
+id5 <- c(162, 504, 181, 13, 447)
+indices5 <- match(id5, id)
+
+vb1 <- c("Relaxed", "Stressed", "Relaxed", "Happy", "Angry")
+vb2 <- c("Relaxed_hat", "Stressed_hat", "Relaxed_hat", "Happy_hat", "Angry_hat")
+
+cols_pred <- c("#FC8D62","#8DA0CB", "#8DA0CB","#E78AC3","#FC8D62")
+
+
+
+# Layout
+lmat <- matrix(6:20, 5, 3, byrow = TRUE)
+lmat <- cbind(1:5, lmat)
+lo <- layout(lmat, widths = c(0.15, 1, .25, 1), heights = c(1,1,1,1,1))
+# layout.show(lo)
+
+plotLabel("ID 162 (Cluster 2)", srt = 90)
+plotLabel("ID 504 (Cluster 3)", srt = 90)
+plotLabel("ID 181 (Cluster 3)", srt = 90)
+plotLabel("ID 13 (Cluster 4)", srt = 90)
+plotLabel("ID 447 (Cluster 2)", srt = 90)
+
+# plot
+for(j in 1:5) {
+  data_res_j <- pred4$Predictions[[indices5[j]]]
+  
+  print(j)
+  PlotTS_Flex(data = data_res_j,
+              IDcol = "ID",
+              ID = id5[j], # Subject number, here fixed
+              variable = vb1[j],
+              variable2 = vb2[j],
+              layout = FALSE,
+              title = FALSE,
+              ylab = TRUE,
+              xlim = c(1,70),
+              trend=FALSE,
+              resLegend = c(FALSE, TRUE, FALSE, FALSE, FALSE)[j],
+              col_pred = cols_pred[j])
+  
+  plotBV_flex(data=data_res_j,
+              IDcol = "ID",
+              ID = id5[j], # Subject number, here fixed
+              variable1 = vb2[j],
+              variable2 = vb1[j],
+              lag=FALSE,
+              title=FALSE,
+              para=FALSE,
+              fit= FALSE,
+              diag = TRUE,
+              R2=TRUE)
+}
+
+dev.off()
+
+
+
+
+PlotTRENDS(out_seed1, 2, variables)
+PlotTRENDS(out_seed1, 3, variables)
+PlotTRENDS(out_seed1, 4, variables)
+PlotTRENDS(out_seed1, 5, variables)
+PlotTRENDS(out_seed1, 6, variables)
+
+clas4

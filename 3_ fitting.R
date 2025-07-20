@@ -557,6 +557,47 @@ print(xtable(cross_mat,
       caption.placement = "top",
       hline.after = c(-1,0,nrow(cross_mat)))
 
+
+
+# ----- print rest ----- #
+
+# Store classification data.frames for each k (2:6)
+class_list <- list()
+for (k in 2:6) {
+  best_idx <- best_runs[k]
+  clas <- t(out_seed1$All_Models[[k]][[1]][[best_idx]]$Classification)
+  class_list[[k]] <- data.frame(
+    id = as.numeric(rownames(clas)),
+    classification = paste0("Cluster ", clas[, 1])
+  )
+}
+
+# Generate all pairwise cross-classification matrices
+cross_matrices <- list()
+for (k1 in 2:6) {
+  for (k2 in (k1+1):6) {
+    merged_classes <- merge(class_list[[k1]], class_list[[k2]], by = "id", suffixes = c(paste0("_", k1), paste0("_", k2)))
+    cross_mat <- addmargins(table(merged_classes[[paste0("classification_", k1)]], merged_classes[[paste0("classification_", k2)]]))
+    cross_matrices[[paste0(k1, "vs", k2)]] <- cross_mat
+    
+  }
+}
+
+# latex
+
+print(
+  xtable(
+    cross_matrices[["2vs3"]],
+    caption = "Cross-classification matrix of cluster assignments between the 4-cluster and 5-cluster models.",
+    label = "tab:crossmat_2_3",
+    align = c("l", rep("c", ncol(cross_matrices[["2vs3"]])))
+  ),
+  include.rownames = TRUE,
+  include.colnames = TRUE,
+  caption.placement = "top",
+  hline.after = c(-1, 0, nrow(cross_matrices[["2vs3"]]))
+)
+
 print(
   xtable(
     cross_matrices[["4vs5"]],
@@ -570,6 +611,18 @@ print(
   hline.after = c(-1, 0, nrow(cross_matrices[["4vs5"]]))
 )
 
+print(
+  xtable(
+    cross_matrices[["5vs6"]],
+    caption = "Cross-classification matrix of cluster assignments between the 4-cluster and 5-cluster models.",
+    label = "tab:crossmat_5_6",
+    align = c("l", rep("c", ncol(cross_matrices[["5vs6"]])))
+  ),
+  include.rownames = TRUE,
+  include.colnames = TRUE,
+  caption.placement = "top",
+  hline.after = c(-1, 0, nrow(cross_matrices[["5vs6"]]))
+)
 
 
 ###################################################################
@@ -993,3 +1046,7 @@ group_high27 <- depndep %>% filter(original > 27)
 table(group_low27$classification)
 table(group_high27$classification)
 
+
+
+cluster4 <- external4[external4$Cluster == 4,]
+sort(round(cluster4$CESD))
