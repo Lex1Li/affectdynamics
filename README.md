@@ -1,2 +1,4 @@
 # readme
-Code files for Research Masters internship
+Code files and supplementary material for the Research Masters internship 
+
+To reproduce results, load 
